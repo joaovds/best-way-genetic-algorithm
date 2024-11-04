@@ -31,7 +31,7 @@ func (a *Algorithm) Run() {
 	for i, c := range a.InitPopulationWithLocations().Chromosomes {
 		fmt.Println("Chromosome:", i, "=>", c.Fitness)
 		for _, g := range c.Genes {
-			fmt.Println("ID:", g.ID, "=> X:", g.X, "Y:", g.Y)
+			fmt.Println("ID:", g.ID, "=> X:", g.X, "Y:", g.Y, "Next Point Distance:", g.Distance)
 		}
 	}
 }

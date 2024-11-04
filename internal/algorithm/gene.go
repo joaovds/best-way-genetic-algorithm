@@ -15,3 +15,7 @@ func NewGene(id int, x, y float64) *Gene {
 		Distance: 0.0,
 	}
 }
+
+func (g *Gene) CalculateDistanceToDestination(destination *Gene) float64 {
+	return 0.2
+}
