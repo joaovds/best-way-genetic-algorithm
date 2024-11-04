@@ -15,10 +15,16 @@ func main() {
 }
 
 func genMockLocations() []*dto.Location {
-	return []*dto.Location{
+	locations := []*dto.Location{
 		dto.NewLocation(0.0, 1.0),
 		dto.NewLocation(1.0, 3.0),
 		dto.NewLocation(4.0, 4.0),
 		dto.NewLocation(6.0, 1.0),
 	}
+
+	for i, location := range locations {
+		location.ID = i
+	}
+
+	return locations
 }
