@@ -1,5 +1,7 @@
 package algorithm
 
+import "math/rand/v2"
+
 type Gene struct {
 	ID       int
 	X        float64
@@ -21,5 +23,5 @@ func (g *Gene) CalculateDistanceToDestination(destination *Gene) float64 {
 		return 0
 	}
 
-	return 0.2
+	return rand.Float64() * 10
 }
