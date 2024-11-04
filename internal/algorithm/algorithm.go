@@ -9,19 +9,19 @@ import (
 
 type (
 	Algorithm struct {
-		config              *Config
-		locations           []*dto.Location
-		geneQuantity        int
-		numberOfChromosomes int
+		locations      []*dto.Location
+		geneQuantity   int
+		populationSize int
+		maxGenerations int
 	}
 )
 
-func NewAlgorithm(config *Config, locations []*dto.Location) *Algorithm {
+func NewAlgorithm(locations []*dto.Location) *Algorithm {
 	return &Algorithm{
-		config:              config,
-		locations:           locations,
-		geneQuantity:        len(locations),
-		numberOfChromosomes: len(locations) * 10,
+		locations:      locations,
+		geneQuantity:   len(locations),
+		populationSize: len(locations) * 10,
+		maxGenerations: 300,
 	}
 }
 
@@ -37,9 +37,9 @@ func (a *Algorithm) Run() {
 }
 
 func (a *Algorithm) InitPopulationWithLocations() *Population {
-	chromosomes := make([]*Chromosome, a.numberOfChromosomes)
+	chromosomes := make([]*Chromosome, a.populationSize)
 
-	for index := range a.numberOfChromosomes {
+	for index := range a.populationSize {
 		shuffledLocations := rand.Perm(len(a.locations))
 		genes := make([]*Gene, a.geneQuantity)
 

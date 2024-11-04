@@ -6,10 +6,9 @@ import (
 )
 
 func main() {
-	config := algorithm.NewConfig()
 	locations := genMockLocations()
 
-	algorithmGen := algorithm.NewAlgorithm(config, locations)
+	algorithmGen := algorithm.NewAlgorithm(locations)
 
 	algorithmGen.Run()
 }
