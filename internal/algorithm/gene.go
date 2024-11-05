@@ -1,6 +1,15 @@
 package algorithm
 
-import "math/rand/v2"
+import (
+	"fmt"
+	"math/rand/v2"
+	"sync"
+)
+
+var (
+	distancesCache map[string]float64 = make(map[string]float64)
+	cacheMutex     sync.Mutex
+)
 
 type Gene struct {
 	ID       int
@@ -23,5 +32,17 @@ func (g *Gene) CalculateDistanceToDestination(destination *Gene) float64 {
 		return 0
 	}
 
-	return rand.Float64() * 10
+	cacheKey := g.generateCacheKey(destination.ID)
+	cacheMutex.Lock()
+	defer cacheMutex.Unlock()
+	if distance, exists := distancesCache[cacheKey]; exists {
+		return distance
+	}
+	distance := rand.Float64() * 10
+	distancesCache[cacheKey] = distance
+	return distance
+}
+
+func (g *Gene) generateCacheKey(destinationID int) string {
+	return fmt.Sprintf("%d-%d", g.ID, destinationID)
 }
