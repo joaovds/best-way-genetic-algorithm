@@ -2,7 +2,6 @@ package algorithm
 
 import (
 	"fmt"
-	"math/rand"
 
 	"github.com/joaovds/best-way-genetic-algorithm/internal/dto"
 )
@@ -19,17 +18,20 @@ type (
 func NewAlgorithm(locations []*dto.Location) *Algorithm {
 	return &Algorithm{
 		locations:      locations,
-		geneQuantity:   len(locations),
+		geneQuantity:   len(locations) - 1,
 		populationSize: len(locations) * 10,
 		maxGenerations: 300,
 	}
 }
 
 func (a *Algorithm) Run() {
+	population := a.InitPopulationWithLocations()
+
 	fmt.Println(a.locations)
 	println()
-	for i, c := range a.InitPopulationWithLocations().Chromosomes {
+	for i, c := range population.Chromosomes {
 		fmt.Println("Chromosome:", i, "=>", c.Fitness)
+		fmt.Println("ID Starting:", c.StartingPoint.ID, "=> X:", c.StartingPoint.X, "Y:", c.StartingPoint.Y, "Next Point Distance:", c.StartingPoint.Distance)
 		for _, g := range c.Genes {
 			fmt.Println("ID:", g.ID, "=> X:", g.X, "Y:", g.Y, "Next Point Distance:", g.Distance)
 		}
@@ -40,14 +42,25 @@ func (a *Algorithm) InitPopulationWithLocations() *Population {
 	chromosomes := make([]*Chromosome, a.populationSize)
 
 	for index := range a.populationSize {
-		shuffledLocations := rand.Perm(len(a.locations))
 		genes := make([]*Gene, a.geneQuantity)
+		var startingPointGene *Gene
 
-		for index, locationIndex := range shuffledLocations {
-			location := a.locations[locationIndex]
-			genes[index] = NewGene(location.ID, location.X, location.Y)
+		geneIndex := 0
+		for _, location := range a.locations {
+			if geneIndex == a.geneQuantity {
+				startingPointGene = NewGene(location.ID, location.X, location.Y)
+				continue
+			}
+
+			if location.StartingPoint {
+				startingPointGene = NewGene(location.ID, location.X, location.Y)
+			} else {
+				genes[geneIndex] = NewGene(location.ID, location.X, location.Y)
+				geneIndex++
+			}
 		}
-		chromosomes[index] = NewChromosome(genes)
+		chromosomes[index] = NewChromosome(startingPointGene, genes)
+		chromosomes[index].ShufflingGenes()
 	}
 
 	return NewPopulation(chromosomes)
