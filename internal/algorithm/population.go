@@ -5,9 +5,19 @@ type Population struct {
 	Size        int
 }
 
-func NewPopulation(chromosome []*Chromosome) *Population {
+func NewPopulation(chromosomes []*Chromosome) *Population {
+	for _, chromosome := range chromosomes {
+		for i, gene := range chromosome.Genes {
+			if i == len(chromosome.Genes)-1 {
+				gene.Distance = gene.CalculateDistanceToDestination(chromosome.Genes[0])
+			} else {
+				gene.Distance = gene.CalculateDistanceToDestination(chromosome.Genes[i+1])
+			}
+		}
+	}
+
 	return &Population{
-		Chromosomes: chromosome,
-		Size:        len(chromosome),
+		Chromosomes: chromosomes,
+		Size:        len(chromosomes),
 	}
 }
