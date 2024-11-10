@@ -26,3 +26,21 @@ func TestNewChromosome(t *testing.T) {
 		assert.Equal(t, gene.startingPoint, chromosome.Genes[i].startingPoint)
 	}
 }
+
+func TestChromosome_ShufflingGenes(t *testing.T) {
+	genes := []Gene{
+		NewGene(1, "any_adress1"),
+		NewGene(2, "any_adress2"),
+		NewGene(3, "any_adress3"),
+		NewGene(4, "any_adress4"),
+	}
+	chromosome := &Chromosome{Genes: genes}
+
+	t.Run("should shuffle genes", func(t *testing.T) {
+		originalOrder := make([]Gene, len(chromosome.Genes))
+		copy(originalOrder, chromosome.Genes)
+
+		chromosome.ShufflingGenes()
+		assert.ElementsMatch(t, originalOrder, chromosome.Genes, "The shuffled genes should contain the same elements as the original genes")
+	})
+}
