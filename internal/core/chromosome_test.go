@@ -44,3 +44,25 @@ func TestChromosome_ShufflingGenes(t *testing.T) {
 		assert.ElementsMatch(t, originalOrder, chromosome.Genes, "The shuffled genes should contain the same elements as the original genes")
 	})
 }
+
+func TestChromosome_CalculateFitness(t *testing.T) {
+	startingPointGene := NewGene(1, "any_adress")
+	startingPointGene.SetDistance(1.489)
+	genes := []Gene{
+		NewGene(2, "any_adress2"),
+		NewGene(3, "any_adress3"),
+		NewGene(4, "any_adress4"),
+	}
+
+	for i := range genes {
+		genes[i].SetDistance(float64(i) + 1.2)
+	}
+
+	chromosome := NewChromosome(startingPointGene, genes)
+	fitness := chromosome.CalculateFitness()
+	assert.Equal(t, chromosome.Fitness, fitness)
+	assert.Equal(t, 8.089, fitness)
+	for i, gene := range genes {
+		assert.Equal(t, float64(i)+1.2, gene.Distance)
+	}
+}

@@ -29,6 +29,8 @@ func (g *Gene) IsStartingPoint() bool { return g.startingPoint }
 
 func (g *Gene) SetStartingPoint() { g.startingPoint = true }
 
+func (g *Gene) SetDistance(distance float64) { g.Distance = distance }
+
 func NewGene(id int, address string) Gene {
 	return Gene{
 		id:            id,
