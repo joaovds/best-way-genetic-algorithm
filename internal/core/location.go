@@ -1,11 +1,10 @@
 package core
 
 type Location struct {
-	Address    string
-	ID         int
-	isStarting bool
+	Address string
+	ID      int
 }
 
-func NewLocation(id int, address string, isStarting bool) *Location {
-	return &Location{address, id, isStarting}
+func NewLocation(id int, address string) *Location {
+	return &Location{address, id}
 }

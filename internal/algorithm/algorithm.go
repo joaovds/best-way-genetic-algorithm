@@ -1,10 +1,15 @@
 package algorithm
 
-import "github.com/joaovds/best-way-genetic-algorithm/internal/core"
+import (
+	"fmt"
+
+	"github.com/joaovds/best-way-genetic-algorithm/internal/core"
+)
 
 const MAX_POPULATION_SIZE = 7000
 
 type Algorithm struct {
+	startingPoint  *core.Location
 	locations      []*core.Location
 	populationSize int
 	chromosomeSize int
@@ -28,8 +33,17 @@ func NewAlgorithm(startingPoint *core.Location, locations []*core.Location) *Alg
 	}
 
 	return &Algorithm{
+		startingPoint:  startingPoint,
 		locations:      locations,
 		populationSize: populationSize,
 		chromosomeSize: chromosomeSize,
+	}
+}
+
+func (a *Algorithm) Run() {
+	fmt.Println(a.startingPoint)
+	fmt.Println("Locales:")
+	for _, localion := range a.locations {
+		fmt.Println(localion)
 	}
 }
