@@ -7,7 +7,11 @@ import (
 
 func main() {
 	locations := generateMockLocations()
-	algorithmInstance := algorithm.NewAlgorithm(locations.ToCoreLocation())
+	startingPoint, coreLocations, err := locations.ToCoreLocation()
+	if err != nil {
+		panic(err)
+	}
+	algorithmInstance := algorithm.NewAlgorithm(startingPoint, coreLocations)
 	algorithmInstance.Run()
 }
 
