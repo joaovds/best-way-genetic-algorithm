@@ -9,12 +9,12 @@ func NewLocation(id int, address string) *Location {
 	return &Location{address, id}
 }
 
-func (l *Location) ToNewGene() Gene {
+func (l *Location) ToNewGene() *Gene {
 	return NewGene(l.ID, l.Address)
 }
 
-func LocationsToGenes(locations []*Location) []Gene {
-	genes := make([]Gene, len(locations))
+func LocationsToGenes(locations []*Location) []*Gene {
+	genes := make([]*Gene, len(locations))
 	for i, location := range locations {
 		genes[i] = location.ToNewGene()
 	}

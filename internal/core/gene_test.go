@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 func TestNewGene(t *testing.T) {
@@ -31,36 +30,27 @@ func TestGenerateCacheKey(t *testing.T) {
 	}
 }
 
-type mockDistanceCalculator struct {
-	mock.Mock
-}
-
-func (m *mockDistanceCalculator) CalculateDistance(from, to *Gene) float64 {
-	args := m.Called(from, to)
-	return args.Get(0).(float64)
-}
-
 func TestCalculateDistanceToDestination(t *testing.T) {
-	cleanCache := func() { distancesCache = make(map[string]float64) }
-
 	t.Run("should return 0 if destinationID is equal to fromID", func(t *testing.T) {
+		defer t.Cleanup(cleanCache)
 		from := NewGene(1, "any_address")
 		destination := from
-		calculatorMock := &mockDistanceCalculator{}
-		result := from.CalculateDistanceToDestination(&destination, calculatorMock)
+		calculatorMock := NewMockDistanceCalculator()
+		result := from.CalculateDistanceToDestination(destination, calculatorMock)
 		assert.Equal(t, 0.0, result)
 		calculatorMock.AssertNotCalled(t, "CalculateDistance")
 	})
 
 	t.Run("should calculate distance if destinationID is different from fromID", func(t *testing.T) {
+		defer t.Cleanup(cleanCache)
 		from := NewGene(1, "any_address")
 		destination := NewGene(2, "another_address")
-		calculatorMock := &mockDistanceCalculator{}
-		calculatorMock.On("CalculateDistance", &from, &destination).Return(17.77)
+		calculatorMock := NewMockDistanceCalculator()
+		calculatorMock.On("CalculateDistance", from, destination).Return(17.77)
 
-		result := from.CalculateDistanceToDestination(&destination, calculatorMock)
+		result := from.CalculateDistanceToDestination(destination, calculatorMock)
 		assert.Equal(t, 17.77, result)
-		calculatorMock.AssertCalled(t, "CalculateDistance", &from, &destination)
+		calculatorMock.AssertCalled(t, "CalculateDistance", from, destination)
 	})
 
 	t.Run("should use cache if distance is already calculated", func(t *testing.T) {
@@ -72,7 +62,7 @@ func TestCalculateDistanceToDestination(t *testing.T) {
 		cacheKey := generateCacheKey(from.id, destination.id)
 		distancesCache[cacheKey] = 83.6
 
-		result := from.CalculateDistanceToDestination(&destination, calculatorMock)
+		result := from.CalculateDistanceToDestination(destination, calculatorMock)
 		assert.Equal(t, 83.6, result)
 		calculatorMock.AssertNotCalled(t, "CalculateDistance")
 
@@ -86,7 +76,7 @@ func TestCalculateDistanceToDestination(t *testing.T) {
 		from := NewGene(1, "any_address")
 		destination := NewGene(2, "another_address")
 		calculatorMock := &mockDistanceCalculator{}
-		calculatorMock.On("CalculateDistance", &from, &destination).Return(17.77)
+		calculatorMock.On("CalculateDistance", from, destination).Return(17.77)
 
 		var counter int32
 		var wg sync.WaitGroup
@@ -94,7 +84,7 @@ func TestCalculateDistanceToDestination(t *testing.T) {
 
 		testFunc := func() {
 			defer wg.Done()
-			from.CalculateDistanceToDestination(&destination, calculatorMock)
+			from.CalculateDistanceToDestination(destination, calculatorMock)
 			atomic.AddInt32(&counter, 1)
 		}
 

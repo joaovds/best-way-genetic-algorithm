@@ -11,7 +11,7 @@ func TestLocation_ToNewGene(t *testing.T) {
 	locationToGene := location.ToNewGene()
 	assert.Equal(t, location.ID, locationToGene.GetID())
 	assert.Equal(t, location.Address, locationToGene.Address)
-	assert.IsType(t, Gene{}, locationToGene)
+	assert.IsType(t, &Gene{}, locationToGene)
 }
 
 func TestLocationsToGenes(t *testing.T) {

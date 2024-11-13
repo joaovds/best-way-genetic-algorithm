@@ -1,14 +1,16 @@
 package core
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestNewChromosome(t *testing.T) {
 	startingPointGene := NewGene(1, "any_adress")
-	genes := []Gene{
+	genes := []*Gene{
 		NewGene(2, "any_adress2"),
 		NewGene(3, "any_adress3"),
 		NewGene(4, "any_adress4"),
@@ -26,7 +28,7 @@ func TestNewChromosome(t *testing.T) {
 }
 
 func TestChromosome_ShufflingGenes(t *testing.T) {
-	genes := []Gene{
+	genes := []*Gene{
 		NewGene(1, "any_adress1"),
 		NewGene(2, "any_adress2"),
 		NewGene(3, "any_adress3"),
@@ -35,7 +37,7 @@ func TestChromosome_ShufflingGenes(t *testing.T) {
 	chromosome := &Chromosome{Genes: genes}
 
 	t.Run("should shuffle genes", func(t *testing.T) {
-		originalOrder := make([]Gene, len(chromosome.Genes))
+		originalOrder := make([]*Gene, len(chromosome.Genes))
 		copy(originalOrder, chromosome.Genes)
 
 		chromosome.ShufflingGenes()
@@ -44,23 +46,25 @@ func TestChromosome_ShufflingGenes(t *testing.T) {
 }
 
 func TestChromosome_CalculateFitness(t *testing.T) {
+	defer t.Cleanup(cleanCache)
+	calculatorMock := &mockDistanceCalculator{}
+	calculatorMock.On("CalculateDistance", mock.Anything, mock.Anything).Return(2.0)
+
 	startingPointGene := NewGene(1, "any_adress")
-	startingPointGene.SetDistance(1.489)
-	genes := []Gene{
+	genes := []*Gene{
 		NewGene(2, "any_adress2"),
 		NewGene(3, "any_adress3"),
 		NewGene(4, "any_adress4"),
 	}
 
-	for i := range genes {
-		genes[i].SetDistance(float64(i) + 1.2)
-	}
-
 	chromosome := NewChromosome(startingPointGene, genes)
-	fitness := chromosome.CalculateFitness()
+	fitness := chromosome.CalculateFitness(calculatorMock)
+
+	expectedFitness := 8.0
 	assert.Equal(t, chromosome.Fitness, fitness)
-	assert.Equal(t, 8.089, fitness)
-	for i, gene := range genes {
-		assert.Equal(t, float64(i)+1.2, gene.Distance)
+	assert.Equal(t, expectedFitness, fitness)
+	for _, gene := range chromosome.Genes {
+		fmt.Println(gene)
+		assert.Equal(t, 2.0, gene.Distance)
 	}
 }

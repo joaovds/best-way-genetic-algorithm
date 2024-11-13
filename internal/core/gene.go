@@ -26,8 +26,8 @@ func (g *Gene) GetID() int { return g.id }
 
 func (g *Gene) SetDistance(distance float64) { g.Distance = distance }
 
-func NewGene(id int, address string) Gene {
-	return Gene{
+func NewGene(id int, address string) *Gene {
+	return &Gene{
 		id:       id,
 		Address:  address,
 		Distance: 0.0,
