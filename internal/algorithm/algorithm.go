@@ -47,3 +47,7 @@ func (a *Algorithm) Run() {
 		fmt.Println(localion)
 	}
 }
+
+func (a *Algorithm) generateInitialPopulation() *core.Population {
+	return nil
+}

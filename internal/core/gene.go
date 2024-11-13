@@ -12,10 +12,9 @@ var (
 
 type (
 	Gene struct {
-		Address       string
-		Distance      float64
-		id            int
-		startingPoint bool
+		Address  string
+		Distance float64
+		id       int
 	}
 
 	DistanceCalculator interface {
@@ -25,18 +24,13 @@ type (
 
 func (g *Gene) GetID() int { return g.id }
 
-func (g *Gene) IsStartingPoint() bool { return g.startingPoint }
-
-func (g *Gene) SetStartingPoint() { g.startingPoint = true }
-
 func (g *Gene) SetDistance(distance float64) { g.Distance = distance }
 
 func NewGene(id int, address string) Gene {
 	return Gene{
-		id:            id,
-		Address:       address,
-		Distance:      0.0,
-		startingPoint: false,
+		id:       id,
+		Address:  address,
+		Distance: 0.0,
 	}
 }
 
