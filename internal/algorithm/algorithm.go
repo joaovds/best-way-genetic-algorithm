@@ -41,13 +41,20 @@ func NewAlgorithm(startingPoint *core.Location, locations []*core.Location) *Alg
 }
 
 func (a *Algorithm) Run() {
-	fmt.Println(a.startingPoint)
+	population := core.GenerateInitialPopulation(a.populationSize, a.startingPoint, a.locations)
+
+	fmt.Println("Location: ", a.startingPoint)
 	fmt.Println("Locales:")
 	for _, localion := range a.locations {
 		fmt.Println(localion)
 	}
-}
 
-func (a *Algorithm) generateInitialPopulation() *core.Population {
-	return nil
+	for _, c := range population.Chromosomes {
+		fmt.Println("\n----- ... ----- \nStart:", c.StartingPoint)
+		fmt.Println("\nGenes:")
+		for _, gene := range c.Genes {
+			fmt.Println(gene)
+		}
+	}
+	fmt.Println("\nPopulation Size:", population.GetSize())
 }
