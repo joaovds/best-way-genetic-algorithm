@@ -8,3 +8,7 @@ type Location struct {
 func NewLocation(id int, address string) *Location {
 	return &Location{address, id}
 }
+
+func (l *Location) ToNewGene() Gene {
+	return NewGene(l.ID, l.Address)
+}
