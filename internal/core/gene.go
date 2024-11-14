@@ -1,19 +1,5 @@
 package core
 
-import (
-	"sync"
-)
-
-var (
-	distancesCache map[string]float64 = make(map[string]float64)
-	cacheMutex     sync.Mutex
-	cleanCache     = func() {
-		cacheMutex.Lock()
-		defer cacheMutex.Unlock()
-		distancesCache = make(map[string]float64)
-	}
-)
-
 type (
 	Gene struct {
 		Address  string
@@ -38,19 +24,16 @@ func NewGene(id int, address string) *Gene {
 	}
 }
 
-func (g *Gene) CalculateDistanceToDestination(destination *Gene, calculator DistanceCalculator) float64 {
+func (g *Gene) CalculateDistanceToDestination(destination *Gene, calculator DistanceCalculator, cache *Cache) float64 {
 	if g.id == destination.id {
 		return 0
 	}
 
-	cacheKey := generateCacheKey(g.id, destination.id)
-	cacheMutex.Lock()
-	defer cacheMutex.Unlock()
-	if distance, exists := distancesCache[cacheKey]; exists {
+	if distance, exists := cache.GetFromCache(g.GetID(), destination.GetID()); exists {
 		return distance
 	}
 
 	distance := calculator.CalculateDistance(g, destination)
-	distancesCache[cacheKey] = distance
+	cache.CacheDistance(g.GetID(), destination.GetID(), distance)
 	return distance
 }

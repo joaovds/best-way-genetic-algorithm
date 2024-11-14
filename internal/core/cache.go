@@ -13,6 +13,7 @@ var (
 type (
 	Cache struct {
 		cacheMap sync.Map
+		cacheMu  sync.Mutex
 	}
 
 	cacheEntry struct {

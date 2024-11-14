@@ -41,7 +41,7 @@ func NewAlgorithm(startingPoint *core.Location, locations []*core.Location) *Alg
 }
 
 func (a *Algorithm) Run() {
-	population := core.GenerateInitialPopulation(a.populationSize, a.startingPoint, a.locations)
+	population := core.GenerateInitialPopulation(a.populationSize, a.startingPoint, a.locations, core.GetCacheInstance)
 
 	fmt.Println("Location: ", a.startingPoint)
 	fmt.Println("Locales:")

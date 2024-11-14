@@ -45,8 +45,8 @@ func TestChromosome_ShufflingGenes(t *testing.T) {
 }
 
 func TestChromosome_CalculateFitness(t *testing.T) {
-	defer t.Cleanup(cleanCache)
 	calculatorMock := &mockDistanceCalculator{}
+	cache := mockGetCacheInstanceFn()
 	calculatorMock.On("CalculateDistance", mock.Anything, mock.Anything).Return(2.0)
 
 	startingPointGene := NewGene(1, "any_adress")
@@ -57,7 +57,7 @@ func TestChromosome_CalculateFitness(t *testing.T) {
 	}
 
 	chromosome := NewChromosome(startingPointGene, genes)
-	fitness := chromosome.CalculateFitness(calculatorMock)
+	fitness := chromosome.CalculateFitness(calculatorMock, cache)
 
 	expectedFitness := 8.0
 	assert.Equal(t, chromosome.Fitness, fitness)

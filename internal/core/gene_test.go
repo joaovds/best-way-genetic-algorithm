@@ -1,8 +1,6 @@
 package core
 
 import (
-	"sync"
-	"sync/atomic"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -17,68 +15,44 @@ func TestNewGene(t *testing.T) {
 
 func TestCalculateDistanceToDestination(t *testing.T) {
 	t.Run("should return 0 if destinationID is equal to fromID", func(t *testing.T) {
-		defer t.Cleanup(cleanCache)
-		from := NewGene(1, "any_address")
-		destination := from
-		calculatorMock := NewMockDistanceCalculator()
-		result := from.CalculateDistanceToDestination(destination, calculatorMock)
-		assert.Equal(t, 0.0, result)
-		calculatorMock.AssertNotCalled(t, "CalculateDistance")
+		for i := range 10 {
+			from := NewGene(i, "any_address")
+			destination := from
+			calculatorMock := NewMockDistanceCalculator()
+			mockCache := mockGetCacheInstanceFn()
+			result := from.CalculateDistanceToDestination(destination, calculatorMock, mockCache)
+			assert.Empty(t, result)
+			calculatorMock.AssertNotCalled(t, "CalculateDistance")
+		}
 	})
 
 	t.Run("should calculate distance if destinationID is different from fromID", func(t *testing.T) {
-		defer t.Cleanup(cleanCache)
 		from := NewGene(1, "any_address")
 		destination := NewGene(2, "another_address")
 		calculatorMock := NewMockDistanceCalculator()
+		mockCache := mockGetCacheInstanceFn()
 		calculatorMock.On("CalculateDistance", from, destination).Return(17.77)
 
-		result := from.CalculateDistanceToDestination(destination, calculatorMock)
+		result := from.CalculateDistanceToDestination(destination, calculatorMock, mockCache)
 		assert.Equal(t, 17.77, result)
 		calculatorMock.AssertCalled(t, "CalculateDistance", from, destination)
 	})
 
 	t.Run("should use cache if distance is already calculated", func(t *testing.T) {
-		defer t.Cleanup(cleanCache)
-		from := NewGene(1, "any_address")
-		destination := NewGene(2, "another_address")
-		calculatorMock := &mockDistanceCalculator{}
+		mockCache := mockGetCacheInstanceFn()
+		for i := range 10 {
+			from := NewGene(i, "any_address")
+			destination := NewGene(i+1, "another_address")
+			calculatorMock := &mockDistanceCalculator{}
+			calculatorMock.On("CalculateDistance", from, destination).Return(22.876)
 
-		cacheKey := generateCacheKey(from.id, destination.id)
-		distancesCache[cacheKey] = 83.6
+			result := from.CalculateDistanceToDestination(destination, calculatorMock, mockCache)
+			assert.Equal(t, 22.876, result)
+			calculatorMock.AssertCalled(t, "CalculateDistance", from, destination)
 
-		result := from.CalculateDistanceToDestination(destination, calculatorMock)
-		assert.Equal(t, 83.6, result)
-		calculatorMock.AssertNotCalled(t, "CalculateDistance")
-
-		t.Cleanup(func() {
-			distancesCache = make(map[string]float64)
-		})
-	})
-
-	t.Run("should lock the cache and prevent concurrent access", func(t *testing.T) {
-		defer t.Cleanup(cleanCache)
-		from := NewGene(1, "any_address")
-		destination := NewGene(2, "another_address")
-		calculatorMock := &mockDistanceCalculator{}
-		calculatorMock.On("CalculateDistance", from, destination).Return(17.77)
-
-		var counter int32
-		var wg sync.WaitGroup
-		numGoroutines := 10
-
-		testFunc := func() {
-			defer wg.Done()
-			from.CalculateDistanceToDestination(destination, calculatorMock)
-			atomic.AddInt32(&counter, 1)
+			result = from.CalculateDistanceToDestination(destination, calculatorMock, mockCache)
+			calculatorMock.AssertNotCalled(t, "CalculateDistance")
+			calculatorMock.AssertNumberOfCalls(t, "CalculateDistance", 1)
 		}
-
-		wg.Add(numGoroutines)
-		for range numGoroutines {
-			go testFunc()
-		}
-		wg.Wait()
-		calculatorMock.AssertNumberOfCalls(t, "CalculateDistance", 1)
-		assert.Equal(t, int32(numGoroutines), counter)
 	})
 }

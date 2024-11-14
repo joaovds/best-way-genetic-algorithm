@@ -3,23 +3,24 @@ package core
 import "sync"
 
 type Population struct {
+	cache        *Cache
 	Chromosomes  []*Chromosome
 	TotalFitness float64
 }
 
 func (p *Population) GetSize() int { return len(p.Chromosomes) }
 
-func NewPopulation(chromosomes []*Chromosome) *Population {
-	return &Population{Chromosomes: chromosomes}
+func NewPopulation(chromosomes []*Chromosome, getCacheInstanceFn GetCacheInstanceFn) *Population {
+	return &Population{Chromosomes: chromosomes, cache: getCacheInstanceFn()}
 }
 
-func GenerateInitialPopulation(size int, startingPoint *Location, locations []*Location) *Population {
+func GenerateInitialPopulation(size int, startingPoint *Location, locations []*Location, getCacheInstanceFn GetCacheInstanceFn) *Population {
 	chromosomes := make([]*Chromosome, size)
 	for i := range size {
 		chromosomes[i] = NewChromosome(startingPoint.ToNewGene(), LocationsToGenes(locations))
 		chromosomes[i].ShufflingGenes()
 	}
-	return NewPopulation(chromosomes)
+	return NewPopulation(chromosomes, getCacheInstanceFn)
 }
 
 func (p *Population) EvaluateFitness(dc DistanceCalculator) {
@@ -30,7 +31,7 @@ func (p *Population) EvaluateFitness(dc DistanceCalculator) {
 		wg.Add(1)
 		go func(c *Chromosome) {
 			defer wg.Done()
-			totalFitnessCh <- c.CalculateFitness(dc)
+			totalFitnessCh <- c.CalculateFitness(dc, p.cache)
 		}(chromosome)
 	}
 
