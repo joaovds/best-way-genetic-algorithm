@@ -29,6 +29,10 @@ func (g *Gene) CalculateDistanceToDestination(destination *Gene, calculator Dist
 		return 0
 	}
 
+	lock := getCacheLock(g.GetID(), destination.GetID())
+	lock.Lock()
+	defer lock.Unlock()
+
 	if distance, exists := cache.GetFromCache(g.GetID(), destination.GetID()); exists {
 		return distance
 	}

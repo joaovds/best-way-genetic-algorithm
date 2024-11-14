@@ -8,12 +8,12 @@ import (
 var (
 	cacheInstance *Cache
 	once          sync.Once
+	cacheLocks    sync.Map
 )
 
 type (
 	Cache struct {
 		cacheMap sync.Map
-		cacheMu  sync.Mutex
 	}
 
 	cacheEntry struct {
@@ -39,6 +39,12 @@ func (c *Cache) GetFromCache(fromID, destinationID int) (float64, bool) {
 
 	entry := value.(cacheEntry)
 	return entry.distance, true
+}
+
+func getCacheLock(fromID, destinationID int) *sync.Mutex {
+	cacheKey := generateCacheKey(fromID, destinationID)
+	lock, _ := cacheLocks.LoadOrStore(cacheKey, &sync.Mutex{})
+	return lock.(*sync.Mutex)
 }
 
 func generateCacheKey(fromID, destinationID int) string {

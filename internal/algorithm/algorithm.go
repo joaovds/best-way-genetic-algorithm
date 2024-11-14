@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/joaovds/best-way-genetic-algorithm/internal/core"
+	"github.com/joaovds/best-way-genetic-algorithm/internal/distance"
 )
 
 const MAX_POPULATION_SIZE = 7000
@@ -41,7 +42,10 @@ func NewAlgorithm(startingPoint *core.Location, locations []*core.Location) *Alg
 }
 
 func (a *Algorithm) Run() {
+	distanceCalculator := distance.NewSimpleDistanceCalculator()
 	population := core.GenerateInitialPopulation(a.populationSize, a.startingPoint, a.locations, core.GetCacheInstance)
+
+	population.EvaluateFitness(distanceCalculator)
 
 	fmt.Println("Location: ", a.startingPoint)
 	fmt.Println("Locales:")

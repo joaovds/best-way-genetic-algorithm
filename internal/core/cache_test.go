@@ -2,6 +2,7 @@ package core
 
 import (
 	"sync"
+	"sync/atomic"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -104,4 +105,65 @@ func TestGenerateCacheKey(t *testing.T) {
 		generatedKey := generateCacheKey(testCase.fromID, testCase.destinationID)
 		assert.Equal(t, testCase.expected, generatedKey)
 	}
+}
+
+func TestCache(t *testing.T) {
+	t.Run("should store and retrieve distance from cache", func(t *testing.T) {
+		cache := mockGetCacheInstanceFn()
+		from := NewGene(1, "address1")
+		destination := NewGene(2, "address2")
+		calculatorMock := NewMockDistanceCalculator()
+		calculatorMock.On("CalculateDistance", from, destination).Return(10.0)
+
+		distance := from.CalculateDistanceToDestination(destination, calculatorMock, cache)
+		assert.Equal(t, 10.0, distance)
+
+		storedDistance, found := cache.GetFromCache(from.GetID(), destination.GetID())
+		assert.True(t, found)
+		assert.Equal(t, 10.0, storedDistance)
+	})
+
+	t.Run("should not recalculate if distance is in cache", func(t *testing.T) {
+		cache := mockGetCacheInstanceFn()
+		from := NewGene(1, "address1")
+		destination := NewGene(2, "address2")
+		calculatorMock := NewMockDistanceCalculator()
+		calculatorMock.On("CalculateDistance", from, destination).Return(10.0)
+
+		distance := from.CalculateDistanceToDestination(destination, calculatorMock, cache)
+		assert.Equal(t, 10.0, distance)
+		calculatorMock.AssertNumberOfCalls(t, "CalculateDistance", 1)
+
+		distanceAgain := from.CalculateDistanceToDestination(destination, calculatorMock, cache)
+		assert.Equal(t, 10.0, distanceAgain)
+		calculatorMock.AssertNumberOfCalls(t, "CalculateDistance", 1)
+	})
+
+	t.Run("should handle concurrent access correctly", func(t *testing.T) {
+		cache := mockGetCacheInstanceFn()
+		from := NewGene(1, "address1")
+		destination := NewGene(2, "address2")
+		calculatorMock := NewMockDistanceCalculator()
+		calculatorMock.On("CalculateDistance", from, destination).Return(10.0)
+
+		var wg sync.WaitGroup
+		numGoroutines := 10
+		var counter int32
+
+		testFunc := func() {
+			defer wg.Done()
+			from.CalculateDistanceToDestination(destination, calculatorMock, cache)
+			atomic.AddInt32(&counter, 1)
+		}
+
+		wg.Add(numGoroutines)
+		for i := 0; i < numGoroutines; i++ {
+			go testFunc()
+		}
+
+		wg.Wait()
+
+		calculatorMock.AssertNumberOfCalls(t, "CalculateDistance", 1)
+		assert.Equal(t, int32(numGoroutines), counter)
+	})
 }
