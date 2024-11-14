@@ -1,5 +1,7 @@
 package core
 
+import "sync"
+
 type Population struct {
 	Chromosomes []*Chromosome
 }
@@ -17,4 +19,18 @@ func GenerateInitialPopulation(size int, startingPoint *Location, locations []*L
 		chromosomes[i].ShufflingGenes()
 	}
 	return NewPopulation(chromosomes)
+}
+
+func (p *Population) EvaluateFitness(dc DistanceCalculator) {
+	var wg sync.WaitGroup
+
+	for _, chromosome := range p.Chromosomes {
+		wg.Add(1)
+		go func(c *Chromosome) {
+			defer wg.Done()
+			c.CalculateFitness(dc)
+		}(chromosome)
+	}
+
+	wg.Wait()
 }

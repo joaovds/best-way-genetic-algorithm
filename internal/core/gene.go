@@ -8,6 +8,11 @@ import (
 var (
 	distancesCache map[string]float64 = make(map[string]float64)
 	cacheMutex     sync.Mutex
+	cleanCache     = func() {
+		cacheMutex.Lock()
+		defer cacheMutex.Unlock()
+		distancesCache = make(map[string]float64)
+	}
 )
 
 type (

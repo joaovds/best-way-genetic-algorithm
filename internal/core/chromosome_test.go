@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -64,7 +63,6 @@ func TestChromosome_CalculateFitness(t *testing.T) {
 	assert.Equal(t, chromosome.Fitness, fitness)
 	assert.Equal(t, expectedFitness, fitness)
 	for _, gene := range chromosome.Genes {
-		fmt.Println(gene)
 		assert.Equal(t, 2.0, gene.Distance)
 	}
 }
