@@ -3,13 +3,14 @@ package core
 import "sync"
 
 type Population struct {
-	Chromosomes []*Chromosome
+	Chromosomes  []*Chromosome
+	TotalFitness float64
 }
 
 func (p *Population) GetSize() int { return len(p.Chromosomes) }
 
 func NewPopulation(chromosomes []*Chromosome) *Population {
-	return &Population{chromosomes}
+	return &Population{Chromosomes: chromosomes}
 }
 
 func GenerateInitialPopulation(size int, startingPoint *Location, locations []*Location) *Population {
@@ -23,14 +24,22 @@ func GenerateInitialPopulation(size int, startingPoint *Location, locations []*L
 
 func (p *Population) EvaluateFitness(dc DistanceCalculator) {
 	var wg sync.WaitGroup
+	totalFitnessCh := make(chan float64)
 
 	for _, chromosome := range p.Chromosomes {
 		wg.Add(1)
 		go func(c *Chromosome) {
 			defer wg.Done()
-			c.CalculateFitness(dc)
+			totalFitnessCh <- c.CalculateFitness(dc)
 		}(chromosome)
 	}
 
-	wg.Wait()
+	go func() {
+		wg.Wait()
+		close(totalFitnessCh)
+	}()
+
+	for fitness := range totalFitnessCh {
+		p.TotalFitness += fitness
+	}
 }
