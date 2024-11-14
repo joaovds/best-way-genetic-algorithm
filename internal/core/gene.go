@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -54,8 +53,4 @@ func (g *Gene) CalculateDistanceToDestination(destination *Gene, calculator Dist
 	distance := calculator.CalculateDistance(g, destination)
 	distancesCache[cacheKey] = distance
 	return distance
-}
-
-func generateCacheKey(fromID, destinationID int) string {
-	return fmt.Sprintf("%d-%d", fromID, destinationID)
 }

@@ -15,21 +15,6 @@ func TestNewGene(t *testing.T) {
 	assert.Equal(t, 0.0, gene.Distance)
 }
 
-func TestGenerateCacheKey(t *testing.T) {
-	testCases := []struct {
-		expected              string
-		fromID, destinationID int
-	}{
-		{"2-9", 2, 9},
-		{"4-1", 4, 1},
-		{"238-981", 238, 981},
-	}
-	for _, testCase := range testCases {
-		generatedKey := generateCacheKey(testCase.fromID, testCase.destinationID)
-		assert.Equal(t, testCase.expected, generatedKey)
-	}
-}
-
 func TestCalculateDistanceToDestination(t *testing.T) {
 	t.Run("should return 0 if destinationID is equal to fromID", func(t *testing.T) {
 		defer t.Cleanup(cleanCache)
