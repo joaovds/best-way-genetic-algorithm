@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 func TestPopulation_GetSize(t *testing.T) {
@@ -31,8 +30,6 @@ func TestGenerateInitialPopulation(t *testing.T) {
 
 func TestPopulation_EvaluateFitness(t *testing.T) {
 	t.Run("calculates fitness for all chromosomes in the population", func(t *testing.T) {
-		calculatorMock := &MockDistanceCalculator{}
-		calculatorMock.On("CalculateDistance", mock.Anything, mock.Anything).Return(2.0)
 		locationStartingPoint := NewLocation(1, "any")
 		locations := []*Location{
 			NewLocation(2, "any2"),
@@ -43,7 +40,7 @@ func TestPopulation_EvaluateFitness(t *testing.T) {
 		size := 4
 		population := GenerateInitialPopulation(size, locationStartingPoint, locations, MockGetCacheInstanceFn)
 
-		population.EvaluateFitness(calculatorMock)
+		population.EvaluateFitness()
 
 		var expectedTotalFitness float64
 		t.Run("check if the fitness of all chromosomes is not empty", func(t *testing.T) {

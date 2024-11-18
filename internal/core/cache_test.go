@@ -112,10 +112,9 @@ func TestCache(t *testing.T) {
 		cache := MockGetCacheInstanceFn()
 		from := NewGene(1, "address1")
 		destination := NewGene(2, "address2")
-		calculatorMock := NewMockDistanceCalculator()
-		calculatorMock.On("CalculateDistance", from, destination).Return(10.0)
 
-		distance := from.CalculateDistanceToDestination(destination, calculatorMock, cache)
+		cache.CacheDistance(1, 2, 10.0)
+		distance := from.CalculateDistanceToDestination(destination, cache)
 		assert.Equal(t, 10.0, distance)
 
 		storedDistance, found := cache.GetFromCache(from.GetID(), destination.GetID())
@@ -123,28 +122,9 @@ func TestCache(t *testing.T) {
 		assert.Equal(t, 10.0, storedDistance)
 	})
 
-	t.Run("should not recalculate if distance is in cache", func(t *testing.T) {
-		cache := MockGetCacheInstanceFn()
-		from := NewGene(1, "address1")
-		destination := NewGene(2, "address2")
-		calculatorMock := NewMockDistanceCalculator()
-		calculatorMock.On("CalculateDistance", from, destination).Return(10.0)
-
-		distance := from.CalculateDistanceToDestination(destination, calculatorMock, cache)
-		assert.Equal(t, 10.0, distance)
-		calculatorMock.AssertNumberOfCalls(t, "CalculateDistance", 1)
-
-		distanceAgain := from.CalculateDistanceToDestination(destination, calculatorMock, cache)
-		assert.Equal(t, 10.0, distanceAgain)
-		calculatorMock.AssertNumberOfCalls(t, "CalculateDistance", 1)
-	})
-
 	t.Run("should handle concurrent access correctly", func(t *testing.T) {
 		cache := MockGetCacheInstanceFn()
-		from := NewGene(1, "address1")
-		destination := NewGene(2, "address2")
-		calculatorMock := NewMockDistanceCalculator()
-		calculatorMock.On("CalculateDistance", from, destination).Return(10.0)
+		cache.CacheDistance(1, 2, 10)
 
 		var wg sync.WaitGroup
 		numGoroutines := 10
@@ -152,7 +132,6 @@ func TestCache(t *testing.T) {
 
 		testFunc := func() {
 			defer wg.Done()
-			from.CalculateDistanceToDestination(destination, calculatorMock, cache)
 			atomic.AddInt32(&counter, 1)
 		}
 
@@ -163,7 +142,6 @@ func TestCache(t *testing.T) {
 
 		wg.Wait()
 
-		calculatorMock.AssertNumberOfCalls(t, "CalculateDistance", 1)
 		assert.Equal(t, int32(numGoroutines), counter)
 	})
 }

@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 func TestNewChromosome(t *testing.T) {
@@ -45,24 +44,28 @@ func TestChromosome_ShufflingGenes(t *testing.T) {
 }
 
 func TestChromosome_CalculateFitness(t *testing.T) {
-	calculatorMock := &MockDistanceCalculator{}
 	cache := MockGetCacheInstanceFn()
-	calculatorMock.On("CalculateDistance", mock.Anything, mock.Anything).Return(2.0)
 
 	startingPointGene := NewGene(1, "any_adress")
 	genes := []*Gene{
 		NewGene(2, "any_adress2"),
 		NewGene(3, "any_adress3"),
-		NewGene(4, "any_adress4"),
 	}
 
-	chromosome := NewChromosome(startingPointGene, genes)
-	fitness := chromosome.CalculateFitness(calculatorMock, cache)
+	cache.CacheDistance(1, 2, 1.0)
+	cache.CacheDistance(1, 3, 1.0)
+	cache.CacheDistance(2, 1, 1.0)
+	cache.CacheDistance(2, 3, 1.0)
+	cache.CacheDistance(3, 1, 1.0)
+	cache.CacheDistance(3, 2, 1.0)
 
-	expectedFitness := 0.125
+	chromosome := NewChromosome(startingPointGene, genes)
+	fitness := chromosome.CalculateFitness(cache)
+
+	expectedFitness := float64(1) / float64(3)
 	assert.Equal(t, chromosome.Fitness, fitness)
 	assert.Equal(t, expectedFitness, fitness)
 	for _, gene := range chromosome.Genes {
-		assert.Equal(t, 2.0, gene.Distance)
+		assert.Equal(t, 1.0, gene.Distance)
 	}
 }

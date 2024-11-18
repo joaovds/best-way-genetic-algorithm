@@ -20,20 +20,9 @@ func NewGene(id int, address string) *Gene {
 	}
 }
 
-func (g *Gene) CalculateDistanceToDestination(destination *Gene, calculator DistanceCalculator, cache *Cache) float64 {
-	if g.id == destination.id {
-		return 0
-	}
-
-	lock := getCacheLock(g.GetID(), destination.GetID())
-	lock.Lock()
-	defer lock.Unlock()
-
+func (g *Gene) CalculateDistanceToDestination(destination *Gene, cache *Cache) float64 {
 	if distance, exists := cache.GetFromCache(g.GetID(), destination.GetID()); exists {
 		return distance
 	}
-
-	distance := calculator.CalculateDistance(g, destination)
-	cache.CacheDistance(g.GetID(), destination.GetID(), distance)
-	return distance
+	return 0
 }

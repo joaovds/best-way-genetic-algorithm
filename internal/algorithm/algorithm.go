@@ -56,7 +56,8 @@ func NewAlgorithm(startingPoint *core.Location, locations []*core.Location) *Alg
 }
 
 func (a *Algorithm) Run() {
-	distanceCalculator := distance.NewSimpleDistanceCalculator()
+	distanceCalculator := distance.NewInBatchCalculator()
+	distanceCalculator.CalculateDistances(a.locations, core.GetCacheInstance())
 	selection := operation.NewRouletteWheelSelection()
 	crossover := operation.NewPMX()
 	mutation := operation.NewMutation()
@@ -64,7 +65,7 @@ func (a *Algorithm) Run() {
 	population := core.GenerateInitialPopulation(a.populationSize, a.startingPoint, a.locations, core.GetCacheInstance)
 
 	for range MAX_GENERATIONS {
-		population.EvaluateFitness(distanceCalculator)
+		population.EvaluateFitness()
 		population.SortByFitness()
 
 		a.stats = append(a.stats, generationStats{
@@ -88,7 +89,7 @@ func (a *Algorithm) Run() {
 		// 	fmt.Println("Fitness:", c.Fitness)
 		// }
 		// fmt.Println("\nPopulation Size:", population.GetSize())
-		// fmt.Println("\nPopulation Total Fitness:", population.TotalFitness)
+		// fmt.Println("Population Total Fitness:", population.TotalFitness)
 		fmt.Println(population.Chromosomes[0].Fitness)
 		fmt.Println(population.Chromosomes[0].SurvivalCount)
 
@@ -98,7 +99,8 @@ func (a *Algorithm) Run() {
 	for _, gene := range population.Chromosomes[0].Genes {
 		fmt.Print("->", gene.GetID(), gene.Distance)
 	}
-	fmt.Println(distance.Counter)
+	println()
+	fmt.Println("kkk", distance.Counter)
 }
 
 func (a *Algorithm) RenderChart() {

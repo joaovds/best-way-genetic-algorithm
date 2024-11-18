@@ -31,7 +31,7 @@ func GenerateInitialPopulation(size int, startingPoint *Location, locations []*L
 	return NewPopulation(chromosomes, getCacheInstanceFn)
 }
 
-func (p *Population) EvaluateFitness(dc DistanceCalculator) {
+func (p *Population) EvaluateFitness() {
 	var wg sync.WaitGroup
 	totalFitnessCh := make(chan float64, len(p.Chromosomes))
 
@@ -39,7 +39,7 @@ func (p *Population) EvaluateFitness(dc DistanceCalculator) {
 		wg.Add(1)
 		go func(c *Chromosome) {
 			defer wg.Done()
-			totalFitnessCh <- c.CalculateFitness(dc, p.cache)
+			totalFitnessCh <- c.CalculateFitness(p.cache)
 		}(chromosome)
 	}
 

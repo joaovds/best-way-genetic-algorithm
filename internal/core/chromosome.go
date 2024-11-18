@@ -27,17 +27,17 @@ func (c *Chromosome) ShufflingGenes() {
 	c.Genes = shuffledGenes
 }
 
-func (c *Chromosome) CalculateFitness(dc DistanceCalculator, cache *Cache) float64 {
-	distance := c.StartingPoint.CalculateDistanceToDestination(c.Genes[0], dc, cache)
+func (c *Chromosome) CalculateFitness(cache *Cache) float64 {
+	distance := c.StartingPoint.CalculateDistanceToDestination(c.Genes[0], cache)
 	c.StartingPoint.SetDistance(distance)
 	fitness := distance
 
 	for i, gene := range c.Genes {
 		var distance float64
 		if i == len(c.Genes)-1 {
-			distance = gene.CalculateDistanceToDestination(c.StartingPoint, dc, cache)
+			distance = gene.CalculateDistanceToDestination(c.StartingPoint, cache)
 		} else {
-			distance = gene.CalculateDistanceToDestination(c.Genes[i+1], dc, cache)
+			distance = gene.CalculateDistanceToDestination(c.Genes[i+1], cache)
 		}
 		gene.SetDistance(distance)
 		fitness += distance

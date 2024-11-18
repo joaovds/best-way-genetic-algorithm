@@ -41,12 +41,6 @@ func (c *Cache) GetFromCache(fromID, destinationID int) (float64, bool) {
 	return entry.distance, true
 }
 
-func getCacheLock(fromID, destinationID int) *sync.Mutex {
-	cacheKey := generateCacheKey(fromID, destinationID)
-	lock, _ := cacheLocks.LoadOrStore(cacheKey, &sync.Mutex{})
-	return lock.(*sync.Mutex)
-}
-
 func generateCacheKey(fromID, destinationID int) string {
 	return fmt.Sprintf("%d-%d", fromID, destinationID)
 }
