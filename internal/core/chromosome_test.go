@@ -59,7 +59,7 @@ func TestChromosome_CalculateFitness(t *testing.T) {
 	chromosome := NewChromosome(startingPointGene, genes)
 	fitness := chromosome.CalculateFitness(calculatorMock, cache)
 
-	expectedFitness := 8.0
+	expectedFitness := 0.125
 	assert.Equal(t, chromosome.Fitness, fitness)
 	assert.Equal(t, expectedFitness, fitness)
 	for _, gene := range chromosome.Genes {

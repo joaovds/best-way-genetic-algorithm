@@ -59,6 +59,7 @@ func (a *Algorithm) Run() {
 		for _, gene := range c.Genes {
 			fmt.Println(gene)
 		}
+		fmt.Println("Fitness:", c.Fitness)
 	}
 	fmt.Println("\nPopulation Size:", population.GetSize())
 	fmt.Println("\nPopulation Total Fitness:", population.TotalFitness)

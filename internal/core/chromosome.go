@@ -42,6 +42,6 @@ func (c *Chromosome) CalculateFitness(dc DistanceCalculator, cache *Cache) float
 		fitness += distance
 	}
 
-	c.Fitness = fitness
-	return fitness
+	c.Fitness = 1 / fitness
+	return c.Fitness
 }
