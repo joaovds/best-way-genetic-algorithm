@@ -86,7 +86,6 @@ func TestPMX(t *testing.T) {
 		})
 
 		t.Run("2", func(t *testing.T) {
-			t.Skip()
 			parent1Genes := []*core.Gene{
 				core.NewGene(9, "any"),
 				core.NewGene(2, "any"),
@@ -109,8 +108,8 @@ func TestPMX(t *testing.T) {
 				core.NewGene(4, "any"),
 				core.NewGene(1, "any"),
 			}
-			parent1 := core.NewChromosome(nil, parent1Genes)
-			parent2 := core.NewChromosome(nil, parent2Genes)
+			parent1 := core.NewChromosome(core.NewGene(100, "starting"), parent1Genes)
+			parent2 := core.NewChromosome(core.NewGene(100, "starting"), parent2Genes)
 			pmx := NewPMX()
 			// mock
 			pmx.StartPoint, pmx.EndPoint = 3, 5
@@ -145,7 +144,6 @@ func TestPMX(t *testing.T) {
 		})
 
 		t.Run("3", func(t *testing.T) {
-			t.Skip()
 			parent1Genes := []*core.Gene{
 				core.NewGene(1, "any"),
 				core.NewGene(2, "any"),
@@ -158,8 +156,8 @@ func TestPMX(t *testing.T) {
 				core.NewGene(1, "any"),
 				core.NewGene(4, "any"),
 			}
-			parent1 := core.NewChromosome(nil, parent1Genes)
-			parent2 := core.NewChromosome(nil, parent2Genes)
+			parent1 := core.NewChromosome(core.NewGene(100, "starting"), parent1Genes)
+			parent2 := core.NewChromosome(core.NewGene(100, "starting"), parent2Genes)
 			pmx := NewPMX()
 			// mock
 			pmx.StartPoint, pmx.EndPoint = 0, 1
@@ -211,4 +209,40 @@ func TestIndexOfGene(t *testing.T) {
 
 	assert.Equal(t, 3, indexOfGene(genes, core.NewGene(28, "any")))
 	assert.Equal(t, 1, indexOfGene(genes, core.NewGene(4, "any")))
+}
+
+func TestGetCrossoverPoints(t *testing.T) {
+	t.Run("ValidCrossoverPoints", func(t *testing.T) {
+		size := 10
+		for i := 0; i < 1000; i++ {
+			startPoint, endPoint := getCrossoverPoints(size)
+
+			assert.GreaterOrEqual(t, startPoint, 0)
+			assert.Less(t, startPoint, size)
+
+			assert.GreaterOrEqual(t, endPoint, 0)
+			assert.Less(t, endPoint, size)
+			assert.Less(t, startPoint, endPoint)
+		}
+	})
+
+	t.Run("EdgeCases", func(t *testing.T) {
+		t.Run("Size2", func(t *testing.T) {
+			startPoint, endPoint := getCrossoverPoints(2)
+			assert.Equal(t, startPoint, 0)
+			assert.Equal(t, endPoint, 1)
+		})
+
+		t.Run("Size1", func(t *testing.T) {
+			assert.PanicsWithError(t, "The number must be greater than 1", func() {
+				getCrossoverPoints(1)
+			})
+		})
+
+		t.Run("Size0", func(t *testing.T) {
+			assert.PanicsWithError(t, "The number must be greater than 1", func() {
+				getCrossoverPoints(0)
+			})
+		})
+	})
 }

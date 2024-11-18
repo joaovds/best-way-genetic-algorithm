@@ -44,6 +44,10 @@ func (pmx *PMX) Run(parent1, parent2 *core.Chromosome) [2]*core.Chromosome {
 }
 
 func getCrossoverPoints(size int) (startPoint, endPoint int) {
+	if size <= 1 {
+		panic(errors.New("The number must be greater than 1"))
+	}
+
 	randSource := rand.NewSource(time.Now().UnixNano())
 	rnd := rand.New(randSource)
 	startPoint = rnd.Intn(size)
