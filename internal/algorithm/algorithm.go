@@ -99,8 +99,6 @@ func (a *Algorithm) Run() {
 	for _, gene := range population.Chromosomes[0].Genes {
 		fmt.Print("->", gene.GetID(), gene.Distance)
 	}
-	println()
-	fmt.Println("kkk", distance.Counter)
 }
 
 func (a *Algorithm) RenderChart() {
