@@ -61,4 +61,5 @@ func (a *Algorithm) Run() {
 		}
 	}
 	fmt.Println("\nPopulation Size:", population.GetSize())
+	fmt.Println("\nPopulation Total Fitness:", population.TotalFitness)
 }

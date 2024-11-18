@@ -1,6 +1,7 @@
 package core
 
 import (
+	"sort"
 	"sync"
 )
 
@@ -45,4 +46,10 @@ func (p *Population) EvaluateFitness(dc DistanceCalculator) {
 	for fitness := range totalFitnessCh {
 		p.TotalFitness += fitness
 	}
+}
+
+func (p *Population) SortByFitness() {
+	sort.Slice(p.Chromosomes, func(i, j int) bool {
+		return p.Chromosomes[i].Fitness > p.Chromosomes[j].Fitness
+	})
 }

@@ -58,3 +58,29 @@ func TestPopulation_EvaluateFitness(t *testing.T) {
 		})
 	})
 }
+
+func TestPopulation_SortByFitness(t *testing.T) {
+	chromosome1 := NewChromosome(NewGene(1, "any"), []*Gene{
+		NewGene(2, "any2"),
+	})
+	chromosome1.Fitness = 7
+	chromosome2 := NewChromosome(NewGene(1, "any"), []*Gene{
+		NewGene(2, "any2"),
+	})
+	chromosome2.Fitness = 20
+	chromosome3 := NewChromosome(NewGene(1, "any"), []*Gene{
+		NewGene(2, "any2"),
+	})
+	chromosome3.Fitness = 12
+	population := NewPopulation([]*Chromosome{
+		chromosome1,
+		chromosome2,
+		chromosome3,
+	}, mockGetCacheInstanceFn)
+
+	population.SortByFitness()
+
+	assert.Same(t, chromosome2, population.Chromosomes[0])
+	assert.Same(t, chromosome3, population.Chromosomes[1])
+	assert.Same(t, chromosome1, population.Chromosomes[2])
+}
