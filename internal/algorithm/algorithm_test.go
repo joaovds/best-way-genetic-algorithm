@@ -12,7 +12,8 @@ func TestNewAlgorithm(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			startingPoint := new(core.Location)
 			locations := make([]*core.Location, 3)
-			algorithm := NewAlgorithm(startingPoint, locations)
+			config := NewConfig(7000, 300)
+			algorithm := NewAlgorithm(config, startingPoint, locations)
 			assert.Equal(t, 6, algorithm.populationSize)
 		})
 	})
@@ -48,7 +49,8 @@ func TestNewAlgorithm(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			algorithm := NewAlgorithm(startingPoint, tt.locations)
+			config := NewConfig(7000, 300)
+			algorithm := NewAlgorithm(config, startingPoint, tt.locations)
 			if algorithm.populationSize != tt.expectedPopSize {
 				t.Errorf("expected populationSize %d, got %d", tt.expectedPopSize, algorithm.populationSize)
 			}

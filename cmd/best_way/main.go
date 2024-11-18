@@ -11,7 +11,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	algorithmInstance := algorithm.NewAlgorithm(startingPoint, coreLocations)
+	config := algorithm.NewConfig(7000, 300)
+	algorithmInstance := algorithm.NewAlgorithm(config, startingPoint, coreLocations)
 	algorithmInstance.Run()
 	algorithmInstance.RenderChart()
 }

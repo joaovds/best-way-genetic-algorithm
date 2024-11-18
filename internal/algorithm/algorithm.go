@@ -10,13 +10,9 @@ import (
 	"github.com/joaovds/best-way-genetic-algorithm/internal/operation"
 )
 
-const (
-	MAX_POPULATION_SIZE = 7000
-	MAX_GENERATIONS     = 300
-)
-
 type (
 	Algorithm struct {
+		config         *Config
 		startingPoint  *core.Location
 		locations      []*core.Location
 		stats          []generationStats
@@ -30,7 +26,7 @@ type (
 	}
 )
 
-func NewAlgorithm(startingPoint *core.Location, locations []*core.Location) *Algorithm {
+func NewAlgorithm(config *Config, startingPoint *core.Location, locations []*core.Location) *Algorithm {
 	chromosomeSize := len(locations)
 	populationSize := 1
 
@@ -42,11 +38,12 @@ func NewAlgorithm(startingPoint *core.Location, locations []*core.Location) *Alg
 		populationSize = chromosomeSize * 100
 	}
 
-	if populationSize > MAX_POPULATION_SIZE {
-		populationSize = MAX_POPULATION_SIZE
+	if populationSize > config.MaxPopulationSize {
+		populationSize = config.MaxPopulationSize
 	}
 
 	return &Algorithm{
+		config:         config,
 		startingPoint:  startingPoint,
 		locations:      locations,
 		populationSize: populationSize,
@@ -63,7 +60,7 @@ func (a *Algorithm) Run() {
 
 	population := core.GenerateInitialPopulation(a.populationSize, a.startingPoint, a.locations, core.GetCacheInstance)
 
-	for range MAX_GENERATIONS {
+	for range a.config.MaxGenerations {
 		population.EvaluateFitness()
 		population.SortByFitness()
 
