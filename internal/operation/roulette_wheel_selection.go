@@ -9,6 +9,8 @@ import (
 
 type RouletteWheelSelection struct{}
 
+func NewRouletteWheelSelection() *RouletteWheelSelection { return &RouletteWheelSelection{} }
+
 func (r *RouletteWheelSelection) Select(population *core.Population) *core.Chromosome {
 	randSource := rand.NewSource(time.Now().UnixNano())
 	rnd := rand.New(randSource)
