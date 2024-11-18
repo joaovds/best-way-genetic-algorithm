@@ -1,7 +1,6 @@
 package algorithm
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
@@ -74,30 +73,7 @@ func (a *Algorithm) Run() {
 			worseFitness:  population.Chromosomes[population.GetSize()-1].Fitness,
 		})
 
-		// fmt.Println("Location: ", a.startingPoint)
-		// fmt.Println("Locales:")
-		// for _, localion := range a.locations {
-		// 	fmt.Println(localion)
-		// }
-		//
-		// for _, c := range population.Chromosomes {
-		// 	fmt.Println("\n----- ... ----- \nStart:", c.StartingPoint)
-		// 	fmt.Println("\nGenes:")
-		// 	for _, gene := range c.Genes {
-		// 		fmt.Println(gene)
-		// 	}
-		// 	fmt.Println("Fitness:", c.Fitness)
-		// }
-		// fmt.Println("\nPopulation Size:", population.GetSize())
-		// fmt.Println("Population Total Fitness:", population.TotalFitness)
-		fmt.Println(population.Chromosomes[0].Fitness)
-		fmt.Println(population.Chromosomes[0].SurvivalCount)
-
 		population = population.GenerateNextGeration(selection, crossover, mutation)
-	}
-	fmt.Print(population.Chromosomes[0].StartingPoint.GetID(), population.Chromosomes[0].StartingPoint.Distance)
-	for _, gene := range population.Chromosomes[0].Genes {
-		fmt.Print("->", gene.GetID(), gene.Distance)
 	}
 }
 
