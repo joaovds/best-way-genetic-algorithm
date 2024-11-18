@@ -8,4 +8,8 @@ type (
 	Selection interface {
 		Select(*Population) *Chromosome
 	}
+
+	Crossover interface {
+		Run() [2]*Chromosome
+	}
 )

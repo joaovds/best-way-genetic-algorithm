@@ -37,3 +37,18 @@ func (m *MockSelection) Select(p *Population) *Chromosome {
 }
 
 // ----- ... -----
+
+type MockCrossover struct {
+	mock.Mock
+}
+
+func NewMockCrossover() *MockCrossover {
+	return &MockCrossover{}
+}
+
+func (m *MockCrossover) Run() [2]*Chromosome {
+	args := m.Called()
+	return args.Get(0).([2]*Chromosome)
+}
+
+// ----- ... -----
