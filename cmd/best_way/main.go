@@ -13,6 +13,7 @@ func main() {
 	}
 	algorithmInstance := algorithm.NewAlgorithm(startingPoint, coreLocations)
 	algorithmInstance.Run()
+	algorithmInstance.RenderChart()
 }
 
 func generateMockLocations() api.LocationRequest {
