@@ -17,6 +17,7 @@ func TestMutation(t *testing.T) {
 
 	initialGenes := append([]*core.Gene(nil), chromosome.Genes...)
 
-	Mutate(chromosome, 0.5)
+	mutation := NewMutation()
+	mutation.Mutate(chromosome, 0.5)
 	assert.NotEqual(t, initialGenes, chromosome.Genes)
 }

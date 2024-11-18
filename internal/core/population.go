@@ -5,6 +5,11 @@ import (
 	"sync"
 )
 
+const (
+	ELITISM_NUMBER = 4
+	MUTATION_RATE  = 0.1
+)
+
 type Population struct {
 	cache        *Cache
 	Chromosomes  []*Chromosome
@@ -51,6 +56,49 @@ func (p *Population) EvaluateFitness(dc DistanceCalculator) {
 
 func (p *Population) SortByFitness() {
 	sort.Slice(p.Chromosomes, func(i, j int) bool {
+		if p.Chromosomes[i].Fitness == p.Chromosomes[j].Fitness {
+			return p.Chromosomes[i].SurvivalCount > p.Chromosomes[j].SurvivalCount
+		}
+
 		return p.Chromosomes[i].Fitness > p.Chromosomes[j].Fitness
 	})
+}
+
+func (p *Population) GenerateNextGeration(selection Selection, crossover Crossover, mutation Mutation) *Population {
+	nextGenerationChromosomes := make([]*Chromosome, p.GetSize())
+	p.Elitism(nextGenerationChromosomes)
+	numberOfNewChromosomes := ELITISM_NUMBER
+
+	for {
+		parent1 := selection.Select(p)
+		parent2 := selection.Select(p)
+		children := crossover.Run(parent1, parent2)
+
+		for i := range children {
+			mutation.Mutate(children[i], MUTATION_RATE)
+		}
+
+		for i := range children {
+			if numberOfNewChromosomes < len(nextGenerationChromosomes) {
+				nextGenerationChromosomes[numberOfNewChromosomes] = children[i]
+				numberOfNewChromosomes++
+			}
+		}
+
+		if numberOfNewChromosomes >= len(nextGenerationChromosomes) {
+			break
+		}
+	}
+
+	return NewPopulation(nextGenerationChromosomes, GetCacheInstance)
+}
+
+func (p *Population) Elitism(nextGenerationChromosomes []*Chromosome) {
+	for i := range ELITISM_NUMBER {
+		if i == p.GetSize() {
+			break
+		}
+		nextGenerationChromosomes[i] = p.Chromosomes[i]
+		nextGenerationChromosomes[i].SurvivalCount++
+	}
 }

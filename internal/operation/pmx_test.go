@@ -22,7 +22,7 @@ func TestPMX(t *testing.T) {
 		parent2 := core.NewChromosome(nil, parent2Genes)
 
 		assert.PanicsWithError(t, "The chromosomes must contain the same number of genes", func() {
-			NewPMX(parent1, parent2)
+			NewPMX().Run(parent1, parent2)
 		})
 	})
 
@@ -52,11 +52,11 @@ func TestPMX(t *testing.T) {
 			}
 			parent1 := core.NewChromosome(core.NewGene(100, "starting"), parent1Genes)
 			parent2 := core.NewChromosome(core.NewGene(100, "starting"), parent2Genes)
-			pmx := NewPMX(parent1, parent2)
+			pmx := NewPMX()
 			// mock
 			pmx.StartPoint, pmx.EndPoint = 2, 5
 
-			children := pmx.Run()
+			children := pmx.Run(parent1, parent2)
 			child1 := children[0]
 			child2 := children[1]
 
@@ -111,11 +111,11 @@ func TestPMX(t *testing.T) {
 			}
 			parent1 := core.NewChromosome(nil, parent1Genes)
 			parent2 := core.NewChromosome(nil, parent2Genes)
-			pmx := NewPMX(parent1, parent2)
+			pmx := NewPMX()
 			// mock
 			pmx.StartPoint, pmx.EndPoint = 3, 5
 
-			children := pmx.Run()
+			children := pmx.Run(parent1, parent2)
 			child1 := children[0]
 			child2 := children[1]
 
@@ -160,11 +160,11 @@ func TestPMX(t *testing.T) {
 			}
 			parent1 := core.NewChromosome(nil, parent1Genes)
 			parent2 := core.NewChromosome(nil, parent2Genes)
-			pmx := NewPMX(parent1, parent2)
+			pmx := NewPMX()
 			// mock
 			pmx.StartPoint, pmx.EndPoint = 0, 1
 
-			children := pmx.Run()
+			children := pmx.Run(parent1, parent2)
 			child1 := children[0]
 			child2 := children[1]
 

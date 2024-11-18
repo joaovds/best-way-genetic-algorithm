@@ -5,9 +5,13 @@ import (
 
 	"github.com/joaovds/best-way-genetic-algorithm/internal/core"
 	"github.com/joaovds/best-way-genetic-algorithm/internal/distance"
+	"github.com/joaovds/best-way-genetic-algorithm/internal/operation"
 )
 
-const MAX_POPULATION_SIZE = 7000
+const (
+	MAX_POPULATION_SIZE = 7000
+	MAX_GENERATIONS     = 300
+)
 
 type Algorithm struct {
 	startingPoint  *core.Location
@@ -43,25 +47,35 @@ func NewAlgorithm(startingPoint *core.Location, locations []*core.Location) *Alg
 
 func (a *Algorithm) Run() {
 	distanceCalculator := distance.NewSimpleDistanceCalculator()
+	selection := operation.NewRouletteWheelSelection()
+	crossover := operation.NewPMX()
+	mutation := operation.NewMutation()
+
 	population := core.GenerateInitialPopulation(a.populationSize, a.startingPoint, a.locations, core.GetCacheInstance)
 
-	population.EvaluateFitness(distanceCalculator)
-	population.SortByFitness()
+	for range MAX_GENERATIONS {
+		population.EvaluateFitness(distanceCalculator)
+		population.SortByFitness()
 
-	fmt.Println("Location: ", a.startingPoint)
-	fmt.Println("Locales:")
-	for _, localion := range a.locations {
-		fmt.Println(localion)
-	}
+		// fmt.Println("Location: ", a.startingPoint)
+		// fmt.Println("Locales:")
+		// for _, localion := range a.locations {
+		// 	fmt.Println(localion)
+		// }
+		//
+		// for _, c := range population.Chromosomes {
+		// 	fmt.Println("\n----- ... ----- \nStart:", c.StartingPoint)
+		// 	fmt.Println("\nGenes:")
+		// 	for _, gene := range c.Genes {
+		// 		fmt.Println(gene)
+		// 	}
+		// 	fmt.Println("Fitness:", c.Fitness)
+		// }
+		// fmt.Println("\nPopulation Size:", population.GetSize())
+		// fmt.Println("\nPopulation Total Fitness:", population.TotalFitness)
+		fmt.Println(population.Chromosomes[0].Fitness)
+		fmt.Println(population.Chromosomes[0].SurvivalCount)
 
-	for _, c := range population.Chromosomes {
-		fmt.Println("\n----- ... ----- \nStart:", c.StartingPoint)
-		fmt.Println("\nGenes:")
-		for _, gene := range c.Genes {
-			fmt.Println(gene)
-		}
-		fmt.Println("Fitness:", c.Fitness)
+		population = population.GenerateNextGeration(selection, crossover, mutation)
 	}
-	fmt.Println("\nPopulation Size:", population.GetSize())
-	fmt.Println("\nPopulation Total Fitness:", population.TotalFitness)
 }

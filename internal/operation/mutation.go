@@ -7,7 +7,11 @@ import (
 	"github.com/joaovds/best-way-genetic-algorithm/internal/core"
 )
 
-func Mutate(chromosome *core.Chromosome, rate float64) {
+type Mutation struct{}
+
+func NewMutation() *Mutation { return &Mutation{} }
+
+func (m *Mutation) Mutate(chromosome *core.Chromosome, rate float64) {
 	randSource := rand.NewSource(time.Now().UnixNano())
 	rnd := rand.New(randSource)
 

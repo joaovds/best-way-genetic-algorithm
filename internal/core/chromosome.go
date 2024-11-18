@@ -8,6 +8,7 @@ type Chromosome struct {
 	StartingPoint *Gene
 	Genes         []*Gene
 	Fitness       float64
+	SurvivalCount int
 }
 
 func NewChromosome(startingPoint *Gene, genes []*Gene) *Chromosome {

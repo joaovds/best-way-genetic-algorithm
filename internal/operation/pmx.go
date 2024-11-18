@@ -9,36 +9,36 @@ import (
 )
 
 type PMX struct {
-	Parent1, Parent2 *core.Chromosome
-	StartPoint       int
-	EndPoint         int
-	Size             int
+	StartPoint, EndPoint int
 }
 
-func NewPMX(parent1, parent2 *core.Chromosome) *PMX {
-	chromosomeSize := len(parent1.Genes)
+func NewPMX() *PMX {
+	return &PMX{}
+}
+
+func (pmx *PMX) Run(parent1, parent2 *core.Chromosome) [2]*core.Chromosome {
+	size := len(parent1.Genes)
 	if len(parent1.Genes) != len(parent2.Genes) {
 		panic(errors.New("The chromosomes must contain the same number of genes"))
 	}
 
-	startPoint, endPoint := getCrossoverPoints(chromosomeSize)
-	return &PMX{parent1, parent2, startPoint, endPoint, chromosomeSize}
-}
-
-func (pmx *PMX) Run() [2]*core.Chromosome {
-	child1Genes := make([]*core.Gene, pmx.Size)
-	child2Genes := make([]*core.Gene, pmx.Size)
-	for i := pmx.StartPoint; i <= pmx.EndPoint; i++ {
-		child1Genes[i] = pmx.Parent2.Genes[i]
-		child2Genes[i] = pmx.Parent1.Genes[i]
+	if pmx.StartPoint == 0 && pmx.EndPoint == 0 {
+		pmx.StartPoint, pmx.EndPoint = getCrossoverPoints(size)
 	}
 
-	fillRemainingGenes(child1Genes, pmx.Parent1.Genes, pmx.StartPoint, pmx.EndPoint)
-	fillRemainingGenes(child2Genes, pmx.Parent2.Genes, pmx.StartPoint, pmx.EndPoint)
+	child1Genes := make([]*core.Gene, size)
+	child2Genes := make([]*core.Gene, size)
+	for i := pmx.StartPoint; i <= pmx.EndPoint; i++ {
+		child1Genes[i] = parent2.Genes[i]
+		child2Genes[i] = parent1.Genes[i]
+	}
+
+	fillRemainingGenes(child1Genes, parent1.Genes, pmx.StartPoint, pmx.EndPoint)
+	fillRemainingGenes(child2Genes, parent2.Genes, pmx.StartPoint, pmx.EndPoint)
 
 	children := [2]*core.Chromosome{
-		core.NewChromosome(core.NewGene(pmx.Parent1.StartingPoint.GetID(), pmx.Parent1.StartingPoint.Address), child1Genes),
-		core.NewChromosome(core.NewGene(pmx.Parent1.StartingPoint.GetID(), pmx.Parent1.StartingPoint.Address), child2Genes),
+		core.NewChromosome(core.NewGene(parent1.StartingPoint.GetID(), parent1.StartingPoint.Address), child1Genes),
+		core.NewChromosome(core.NewGene(parent1.StartingPoint.GetID(), parent1.StartingPoint.Address), child2Genes),
 	}
 	return children
 }
