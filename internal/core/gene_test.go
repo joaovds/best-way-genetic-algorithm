@@ -19,7 +19,7 @@ func TestCalculateDistanceToDestination(t *testing.T) {
 			from := NewGene(i, "any_address")
 			destination := from
 			calculatorMock := NewMockDistanceCalculator()
-			mockCache := mockGetCacheInstanceFn()
+			mockCache := MockGetCacheInstanceFn()
 			result := from.CalculateDistanceToDestination(destination, calculatorMock, mockCache)
 			assert.Empty(t, result)
 			calculatorMock.AssertNotCalled(t, "CalculateDistance")
@@ -30,7 +30,7 @@ func TestCalculateDistanceToDestination(t *testing.T) {
 		from := NewGene(1, "any_address")
 		destination := NewGene(2, "another_address")
 		calculatorMock := NewMockDistanceCalculator()
-		mockCache := mockGetCacheInstanceFn()
+		mockCache := MockGetCacheInstanceFn()
 		calculatorMock.On("CalculateDistance", from, destination).Return(17.77)
 
 		result := from.CalculateDistanceToDestination(destination, calculatorMock, mockCache)
@@ -39,11 +39,11 @@ func TestCalculateDistanceToDestination(t *testing.T) {
 	})
 
 	t.Run("should use cache if distance is already calculated", func(t *testing.T) {
-		mockCache := mockGetCacheInstanceFn()
+		mockCache := MockGetCacheInstanceFn()
 		for i := range 10 {
 			from := NewGene(i, "any_address")
 			destination := NewGene(i+1, "another_address")
-			calculatorMock := &mockDistanceCalculator{}
+			calculatorMock := &MockDistanceCalculator{}
 			calculatorMock.On("CalculateDistance", from, destination).Return(22.876)
 
 			result := from.CalculateDistanceToDestination(destination, calculatorMock, mockCache)

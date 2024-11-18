@@ -46,6 +46,7 @@ func (a *Algorithm) Run() {
 	population := core.GenerateInitialPopulation(a.populationSize, a.startingPoint, a.locations, core.GetCacheInstance)
 
 	population.EvaluateFitness(distanceCalculator)
+	population.SortByFitness()
 
 	fmt.Println("Location: ", a.startingPoint)
 	fmt.Println("Locales:")

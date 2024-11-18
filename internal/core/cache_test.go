@@ -109,7 +109,7 @@ func TestGenerateCacheKey(t *testing.T) {
 
 func TestCache(t *testing.T) {
 	t.Run("should store and retrieve distance from cache", func(t *testing.T) {
-		cache := mockGetCacheInstanceFn()
+		cache := MockGetCacheInstanceFn()
 		from := NewGene(1, "address1")
 		destination := NewGene(2, "address2")
 		calculatorMock := NewMockDistanceCalculator()
@@ -124,7 +124,7 @@ func TestCache(t *testing.T) {
 	})
 
 	t.Run("should not recalculate if distance is in cache", func(t *testing.T) {
-		cache := mockGetCacheInstanceFn()
+		cache := MockGetCacheInstanceFn()
 		from := NewGene(1, "address1")
 		destination := NewGene(2, "address2")
 		calculatorMock := NewMockDistanceCalculator()
@@ -140,7 +140,7 @@ func TestCache(t *testing.T) {
 	})
 
 	t.Run("should handle concurrent access correctly", func(t *testing.T) {
-		cache := mockGetCacheInstanceFn()
+		cache := MockGetCacheInstanceFn()
 		from := NewGene(1, "address1")
 		destination := NewGene(2, "address2")
 		calculatorMock := NewMockDistanceCalculator()

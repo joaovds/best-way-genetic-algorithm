@@ -28,7 +28,7 @@ func GenerateInitialPopulation(size int, startingPoint *Location, locations []*L
 
 func (p *Population) EvaluateFitness(dc DistanceCalculator) {
 	var wg sync.WaitGroup
-	totalFitnessCh := make(chan float64)
+	totalFitnessCh := make(chan float64, len(p.Chromosomes))
 
 	for _, chromosome := range p.Chromosomes {
 		wg.Add(1)
@@ -43,6 +43,7 @@ func (p *Population) EvaluateFitness(dc DistanceCalculator) {
 		close(totalFitnessCh)
 	}()
 
+	p.TotalFitness = 0
 	for fitness := range totalFitnessCh {
 		p.TotalFitness += fitness
 	}

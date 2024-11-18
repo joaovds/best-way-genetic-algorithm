@@ -6,10 +6,6 @@ type (
 		Distance float64
 		id       int
 	}
-
-	DistanceCalculator interface {
-		CalculateDistance(from, to *Gene) float64
-	}
 )
 
 func (g *Gene) GetID() int { return g.id }

@@ -8,7 +8,7 @@ import (
 )
 
 func TestPopulation_GetSize(t *testing.T) {
-	population := NewPopulation(make([]*Chromosome, 3), mockGetCacheInstanceFn)
+	population := NewPopulation(make([]*Chromosome, 3), MockGetCacheInstanceFn)
 	assert.Equal(t, 3, population.GetSize())
 }
 
@@ -22,7 +22,7 @@ func TestGenerateInitialPopulation(t *testing.T) {
 	}
 
 	size := 10
-	population := GenerateInitialPopulation(size, locationStartingPoint, locations, mockGetCacheInstanceFn)
+	population := GenerateInitialPopulation(size, locationStartingPoint, locations, MockGetCacheInstanceFn)
 
 	t.Run("should generate population with correct size", func(t *testing.T) {
 		assert.Equal(t, size, population.GetSize())
@@ -31,7 +31,7 @@ func TestGenerateInitialPopulation(t *testing.T) {
 
 func TestPopulation_EvaluateFitness(t *testing.T) {
 	t.Run("calculates fitness for all chromosomes in the population", func(t *testing.T) {
-		calculatorMock := &mockDistanceCalculator{}
+		calculatorMock := &MockDistanceCalculator{}
 		calculatorMock.On("CalculateDistance", mock.Anything, mock.Anything).Return(2.0)
 		locationStartingPoint := NewLocation(1, "any")
 		locations := []*Location{
@@ -41,7 +41,7 @@ func TestPopulation_EvaluateFitness(t *testing.T) {
 			NewLocation(5, "any5"),
 		}
 		size := 4
-		population := GenerateInitialPopulation(size, locationStartingPoint, locations, mockGetCacheInstanceFn)
+		population := GenerateInitialPopulation(size, locationStartingPoint, locations, MockGetCacheInstanceFn)
 
 		population.EvaluateFitness(calculatorMock)
 
@@ -76,7 +76,7 @@ func TestPopulation_SortByFitness(t *testing.T) {
 		chromosome1,
 		chromosome2,
 		chromosome3,
-	}, mockGetCacheInstanceFn)
+	}, MockGetCacheInstanceFn)
 
 	population.SortByFitness()
 
