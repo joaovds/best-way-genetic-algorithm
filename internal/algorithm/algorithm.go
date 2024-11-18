@@ -78,4 +78,9 @@ func (a *Algorithm) Run() {
 
 		population = population.GenerateNextGeration(selection, crossover, mutation)
 	}
+	fmt.Print(population.Chromosomes[0].StartingPoint.GetID(), population.Chromosomes[0].StartingPoint.Distance)
+	for _, gene := range population.Chromosomes[0].Genes {
+		fmt.Print("->", gene.GetID(), gene.Distance)
+	}
+	fmt.Println(distance.Counter)
 }
