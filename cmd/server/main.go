@@ -9,6 +9,7 @@ import (
 
 	"github.com/joaovds/best-way-genetic-algorithm/internal/algorithm"
 	"github.com/joaovds/best-way-genetic-algorithm/internal/api"
+	"github.com/joaovds/best-way-genetic-algorithm/internal/core"
 	"github.com/joaovds/best-way-genetic-algorithm/internal/distance"
 )
 
@@ -39,6 +40,7 @@ func main() {
 		}
 		config := algorithm.NewConfig(7000, 500, 4, 0.03)
 		distanceCalculator := distance.NewInBatchCalculator()
+		distance.NewDistanceMatrixGoogle(algorithm.ENV.MAPS_API_KEY).CalculateDistances(append(coreLocations, startingPoint), core.GetCacheInstance())
 		algorithmInstance := algorithm.NewAlgorithm(config, startingPoint, coreLocations, distanceCalculator)
 		algorithmRes := algorithmInstance.Run()
 		go algorithmInstance.RenderChart()
