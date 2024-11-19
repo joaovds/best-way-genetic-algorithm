@@ -45,11 +45,11 @@ func init() {
 }
 
 func generateMockLocations(size int) api.LocationRequest {
-	locations := make(api.LocationRequest, size)
+	locations := make([]api.Location, size)
 	for i := 0; i < size; i++ {
 		address := fmt.Sprintf("any_address_%d", i+1)
 		isStarting := (i == 0)
 		locations[i] = api.Location{Address: address, IsStarting: isStarting}
 	}
-	return locations
+	return api.LocationRequest{Locations: locations}
 }

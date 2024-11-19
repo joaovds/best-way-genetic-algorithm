@@ -12,17 +12,19 @@ type (
 		IsStarting bool   `json:"is_starting"`
 	}
 
-	LocationRequest []Location
+	LocationRequest struct {
+		Locations []Location `json:"locations"`
+	}
 )
 
 func (l LocationRequest) ToCoreLocation() (startingPoint *core.Location, locations []*core.Location, err error) {
-	if len(l) < 3 {
+	if len(l.Locations) < 3 {
 		return nil, nil, errors.New("invalid number of locations: must be at least 3")
 	}
 
 	startingPointFound := false
-	locations = make([]*core.Location, 0, len(l)-1)
-	for i, location := range l {
+	locations = make([]*core.Location, 0, len(l.Locations)-1)
+	for i, location := range l.Locations {
 		id := i + 1
 		if location.IsStarting && !startingPointFound {
 			startingPoint = core.NewLocation(id, location.Address)

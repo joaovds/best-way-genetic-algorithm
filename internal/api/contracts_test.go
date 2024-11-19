@@ -9,9 +9,11 @@ import (
 func TestToCoreLocation(t *testing.T) {
 	t.Run("Should convert LocationRequest to core Locations with a single starting point", func(t *testing.T) {
 		locationRequest := LocationRequest{
-			{Address: "Start", IsStarting: true},
-			{Address: "Loc1", IsStarting: false},
-			{Address: "Loc2", IsStarting: false},
+			Locations: []Location{
+				{Address: "Start", IsStarting: true},
+				{Address: "Loc1", IsStarting: false},
+				{Address: "Loc2", IsStarting: false},
+			},
 		}
 
 		startingPoint, locations, err := locationRequest.ToCoreLocation()
@@ -26,9 +28,11 @@ func TestToCoreLocation(t *testing.T) {
 
 	t.Run("Should use the first location as starting point if no starting point is specified", func(t *testing.T) {
 		locationRequest := LocationRequest{
-			{Address: "Loc1", IsStarting: false},
-			{Address: "Loc2", IsStarting: false},
-			{Address: "Loc3", IsStarting: false},
+			Locations: []Location{
+				{Address: "Loc1", IsStarting: false},
+				{Address: "Loc2", IsStarting: false},
+				{Address: "Loc3", IsStarting: false},
+			},
 		}
 
 		startingPoint, locations, err := locationRequest.ToCoreLocation()
@@ -43,10 +47,12 @@ func TestToCoreLocation(t *testing.T) {
 
 	t.Run("Should ignore additional starting points and only use the first one", func(t *testing.T) {
 		locationRequest := LocationRequest{
-			{Address: "Start", IsStarting: true},
-			{Address: "Loc1", IsStarting: false},
-			{Address: "Another Start", IsStarting: true},
-			{Address: "Loc2", IsStarting: false},
+			Locations: []Location{
+				{Address: "Start", IsStarting: true},
+				{Address: "Loc1", IsStarting: false},
+				{Address: "Another Start", IsStarting: true},
+				{Address: "Loc2", IsStarting: false},
+			},
 		}
 
 		startingPoint, locations, err := locationRequest.ToCoreLocation()
@@ -72,7 +78,9 @@ func TestToCoreLocation(t *testing.T) {
 
 	t.Run("Should return error for LocationRequest with only one location", func(t *testing.T) {
 		locationRequest := LocationRequest{
-			{Address: "Start", IsStarting: true},
+			Locations: []Location{
+				{Address: "Start", IsStarting: true},
+			},
 		}
 
 		startingPoint, locations, err := locationRequest.ToCoreLocation()
@@ -84,8 +92,10 @@ func TestToCoreLocation(t *testing.T) {
 
 	t.Run("Should return error for LocationRequest with only two locations", func(t *testing.T) {
 		locationRequest := LocationRequest{
-			{Address: "Start", IsStarting: true},
-			{Address: "Loc1", IsStarting: false},
+			Locations: []Location{
+				{Address: "Start", IsStarting: true},
+				{Address: "Loc1", IsStarting: false},
+			},
 		}
 
 		startingPoint, locations, err := locationRequest.ToCoreLocation()
