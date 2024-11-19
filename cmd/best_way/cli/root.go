@@ -3,6 +3,7 @@ package cli
 import (
 	"os"
 
+	"github.com/joaovds/best-way-genetic-algorithm/internal/algorithm"
 	"github.com/spf13/cobra"
 )
 
@@ -23,6 +24,7 @@ func Execute() {
 }
 
 func init() {
+	algorithm.LoadEnv()
 	rootCmd.Flags().BoolP("help", "h", false, "best_way help commands")
 
 	rootCmd.AddCommand()

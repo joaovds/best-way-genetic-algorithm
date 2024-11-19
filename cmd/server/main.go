@@ -12,6 +12,10 @@ import (
 	"github.com/joaovds/best-way-genetic-algorithm/internal/distance"
 )
 
+func init() {
+	algorithm.LoadEnv()
+}
+
 func main() {
 	mainMux := http.NewServeMux()
 
@@ -44,14 +48,14 @@ func main() {
 	})
 
 	srv := &http.Server{
-		Addr:         ":3333",
+		Addr:         fmt.Sprintf(":%s", algorithm.ENV.ServerPort),
 		Handler:      mainMux,
 		ReadTimeout:  20 * time.Second,
 		WriteTimeout: 1 * time.Minute,
 		IdleTimeout:  100 * time.Second,
 	}
 
-	log.Println("Server running on port", 3333)
+	log.Println("Server running on port", algorithm.ENV.ServerPort)
 	if err := srv.ListenAndServe(); err != nil {
 		log.Fatalf("could not start server: %s", err)
 	}
