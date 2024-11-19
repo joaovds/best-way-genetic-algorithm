@@ -21,6 +21,14 @@ type (
 		maxGenerations int
 	}
 
+	AlgorithmResponse struct {
+		BestWay        *core.Chromosome
+		PopulationSize int
+		MaxGenerations int
+		ElitismNumber  int
+		MutationRate   float64
+	}
+
 	generationStats struct {
 		betterFitness, middleFitness, worseFitness float64
 	}
@@ -51,9 +59,9 @@ func NewAlgorithm(config *Config, startingPoint *core.Location, locations []*cor
 	}
 }
 
-func (a *Algorithm) Run() {
+func (a *Algorithm) Run() *AlgorithmResponse {
 	distanceCalculator := distance.NewInBatchCalculator()
-	distanceCalculator.CalculateDistances(a.locations, core.GetCacheInstance())
+	distanceCalculator.CalculateDistances(append(a.locations, a.startingPoint), core.GetCacheInstance())
 	selection := operation.NewRouletteWheelSelection()
 	crossover := operation.NewPMX()
 	mutation := operation.NewMutation()
@@ -78,6 +86,14 @@ func (a *Algorithm) Run() {
 		})
 
 		population = population.GenerateNextGeration(selection, crossover, mutation)
+	}
+
+	return &AlgorithmResponse{
+		BestWay:        population.Chromosomes[0],
+		PopulationSize: population.GetSize(),
+		MaxGenerations: a.maxGenerations,
+		ElitismNumber:  a.config.ElitismNumber,
+		MutationRate:   a.config.MutationRate,
 	}
 }
 
