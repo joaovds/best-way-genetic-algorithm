@@ -12,4 +12,8 @@ type (
 	Mutation interface {
 		Mutate(chromosome *Chromosome, rate float64)
 	}
+
+	DistanceCalculator interface {
+		CalculateDistances(locations []*Location, cache *Cache)
+	}
 )

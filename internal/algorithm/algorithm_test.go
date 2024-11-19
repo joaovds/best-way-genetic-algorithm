@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/joaovds/best-way-genetic-algorithm/internal/core"
+	"github.com/joaovds/best-way-genetic-algorithm/internal/distance"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,7 +14,8 @@ func TestNewAlgorithm(t *testing.T) {
 			startingPoint := new(core.Location)
 			locations := make([]*core.Location, 3)
 			config := NewConfig(7000, 300, 4, 0.1)
-			algorithm := NewAlgorithm(config, startingPoint, locations)
+			distanceCalculator := distance.NewInBatchCalculator()
+			algorithm := NewAlgorithm(config, startingPoint, locations, distanceCalculator)
 			assert.Equal(t, 6, algorithm.populationSize)
 		})
 	})
@@ -50,7 +52,8 @@ func TestNewAlgorithm(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			config := NewConfig(7000, 300, 4, 0.1)
-			algorithm := NewAlgorithm(config, startingPoint, tt.locations)
+			distanceCalculator := distance.NewInBatchCalculator()
+			algorithm := NewAlgorithm(config, startingPoint, tt.locations, distanceCalculator)
 			if algorithm.populationSize != tt.expectedPopSize {
 				t.Errorf("expected populationSize %d, got %d", tt.expectedPopSize, algorithm.populationSize)
 			}

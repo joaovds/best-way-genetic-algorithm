@@ -6,6 +6,7 @@ import (
 
 	"github.com/joaovds/best-way-genetic-algorithm/internal/algorithm"
 	"github.com/joaovds/best-way-genetic-algorithm/internal/api"
+	"github.com/joaovds/best-way-genetic-algorithm/internal/distance"
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +29,8 @@ var runCmd = &cobra.Command{
 			log.Fatalf("Error converting to core locations: %v", err)
 		}
 		config := algorithm.NewConfig(populationSize, numGenerations, numElites, mutationRate)
-		algorithmInstance := algorithm.NewAlgorithm(config, startingPoint, coreLocations)
+		distanceCalculator := distance.NewInBatchCalculator()
+		algorithmInstance := algorithm.NewAlgorithm(config, startingPoint, coreLocations, distanceCalculator)
 		algorithmInstance.Run()
 		algorithmInstance.RenderChart()
 	},

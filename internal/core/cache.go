@@ -41,6 +41,10 @@ func (c *Cache) GetFromCache(fromID, destinationID int) (float64, bool) {
 	return entry.distance, true
 }
 
+func (c *Cache) Clean() {
+	c = new(Cache)
+}
+
 func generateCacheKey(fromID, destinationID int) string {
 	return fmt.Sprintf("%d-%d", fromID, destinationID)
 }

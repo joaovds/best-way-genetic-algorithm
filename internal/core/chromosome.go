@@ -8,6 +8,7 @@ type Chromosome struct {
 	StartingPoint *Gene
 	Genes         []*Gene
 	Fitness       float64
+	TotalDistance float64
 	SurvivalCount int
 }
 
@@ -43,6 +44,7 @@ func (c *Chromosome) CalculateFitness(cache *Cache) float64 {
 		fitness += distance
 	}
 
+	c.TotalDistance = fitness
 	c.Fitness = 1 / fitness
 	return c.Fitness
 }
