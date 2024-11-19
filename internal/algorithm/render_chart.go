@@ -26,9 +26,9 @@ func (a *Algorithm) RenderChart() {
 
 	for i := range len(a.stats) {
 		generations[i] = i + 1
-		betterFitness[i] = opts.LineData{Value: a.stats[i].better.fitness}
-		middleFitness[i] = opts.LineData{Value: a.stats[i].middle.fitness}
-		worseFitness[i] = opts.LineData{Value: a.stats[i].middle.fitness}
+		betterFitness[i] = opts.LineData{Value: a.stats[i].better.fitness * 1000}
+		middleFitness[i] = opts.LineData{Value: a.stats[i].middle.fitness * 1000}
+		worseFitness[i] = opts.LineData{Value: a.stats[i].middle.fitness * 1000}
 		betterDistance[i] = opts.LineData{Value: a.stats[i].better.distance}
 		middleDistance[i] = opts.LineData{Value: a.stats[i].middle.distance}
 		worseDistance[i] = opts.LineData{Value: a.stats[i].worse.distance}

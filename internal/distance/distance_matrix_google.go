@@ -2,9 +2,8 @@ package distance
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"log"
+	"sync"
 
 	"github.com/joaovds/best-way-genetic-algorithm/internal/core"
 	"googlemaps.github.io/maps"
@@ -43,26 +42,19 @@ func (d *DistanceMatrixGoogle) CalculateDistances(locations []*core.Location, ca
 		log.Fatalf("error calling maps api: %s", err)
 	}
 
-	responseJson, _ := json.Marshal(response)
-	fmt.Println(string(responseJson))
-	fmt.Println()
-	fmt.Println(locationsAddressStrings)
-	fmt.Println(locationsAddressOrder)
-
-	// var wg sync.WaitGroup
-	// wg.Add(len(locations))
-	// for i := range locations {
-	// 	go func(i int) {
-	// 		defer wg.Done()
-	// 		randSource := rand.NewSource(time.Now().UnixNano())
-	// 		rnd := rand.New(randSource)
-	//
-	// 		for j := range locations {
-	// 			if locations[i].ID != locations[j].ID {
-	// 				cache.CacheDistance(locations[i].ID, locations[j].ID, rnd.Float64()*100)
-	// 			}
-	// 		}
-	// 	}(i)
-	// }
-	// wg.Wait()
+	var wg sync.WaitGroup
+	wg.Add(len(response.Rows))
+	for i, origin := range response.Rows {
+		go func(i int) {
+			defer wg.Done()
+			for j, destination := range origin.Elements {
+				originID := locationsAddressOrder[i]
+				destinationID := locationsAddressOrder[j]
+				if originID != destinationID {
+					cache.CacheDistance(originID, destinationID, float64(destination.Distance.Meters))
+				}
+			}
+		}(i)
+	}
+	wg.Wait()
 }
