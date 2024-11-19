@@ -33,7 +33,7 @@ func main() {
 			http.Error(w, fmt.Sprintf("Error converting to core locations: %v", err), http.StatusBadRequest)
 			return
 		}
-		config := algorithm.NewConfig(7000, 500, 4, 0.3)
+		config := algorithm.NewConfig(7000, 500, 4, 0.03)
 		distanceCalculator := distance.NewInBatchCalculator()
 		algorithmInstance := algorithm.NewAlgorithm(config, startingPoint, coreLocations, distanceCalculator)
 		algorithmRes := algorithmInstance.Run()
