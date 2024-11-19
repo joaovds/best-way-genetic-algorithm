@@ -16,7 +16,7 @@ func TestRouletteWheelSelection(t *testing.T) {
 	chromosome2.Fitness = 20.0
 	chromosome3.Fitness = 70.0
 
-	population := core.NewPopulation([]*core.Chromosome{chromosome1, chromosome2, chromosome3}, core.MockGetCacheInstanceFn)
+	population := core.NewPopulation([]*core.Chromosome{chromosome1, chromosome2, chromosome3}, core.MockGetCacheInstanceFn, 4, 0.1)
 	population.TotalFitness = chromosome1.Fitness + chromosome2.Fitness + chromosome3.Fitness
 
 	selectionCounts := make(map[*core.Chromosome]int)

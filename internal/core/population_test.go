@@ -7,7 +7,7 @@ import (
 )
 
 func TestPopulation_GetSize(t *testing.T) {
-	population := NewPopulation(make([]*Chromosome, 3), MockGetCacheInstanceFn)
+	population := NewPopulation(make([]*Chromosome, 3), MockGetCacheInstanceFn, 4, 0.1)
 	assert.Equal(t, 3, population.GetSize())
 }
 
@@ -21,7 +21,7 @@ func TestGenerateInitialPopulation(t *testing.T) {
 	}
 
 	size := 10
-	population := GenerateInitialPopulation(size, locationStartingPoint, locations, MockGetCacheInstanceFn)
+	population := GenerateInitialPopulation(size, locationStartingPoint, locations, MockGetCacheInstanceFn, 4, 0.1)
 
 	t.Run("should generate population with correct size", func(t *testing.T) {
 		assert.Equal(t, size, population.GetSize())
@@ -38,7 +38,7 @@ func TestPopulation_EvaluateFitness(t *testing.T) {
 			NewLocation(5, "any5"),
 		}
 		size := 4
-		population := GenerateInitialPopulation(size, locationStartingPoint, locations, MockGetCacheInstanceFn)
+		population := GenerateInitialPopulation(size, locationStartingPoint, locations, MockGetCacheInstanceFn, 4, 0.1)
 
 		population.EvaluateFitness()
 
@@ -73,7 +73,7 @@ func TestPopulation_SortByFitness(t *testing.T) {
 		chromosome1,
 		chromosome2,
 		chromosome3,
-	}, MockGetCacheInstanceFn)
+	}, MockGetCacheInstanceFn, 4, 0.1)
 
 	population.SortByFitness()
 
@@ -99,7 +99,7 @@ func TestPopulation_SortByFitness(t *testing.T) {
 			chromosome1,
 			chromosome2,
 			chromosome3,
-		}, MockGetCacheInstanceFn)
+		}, MockGetCacheInstanceFn, 4, 0.1)
 
 		population.SortByFitness()
 		assert.Same(t, chromosome3, population.Chromosomes[0])

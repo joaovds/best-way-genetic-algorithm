@@ -12,7 +12,7 @@ func TestNewAlgorithm(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			startingPoint := new(core.Location)
 			locations := make([]*core.Location, 3)
-			config := NewConfig(7000, 300)
+			config := NewConfig(7000, 300, 4, 0.1)
 			algorithm := NewAlgorithm(config, startingPoint, locations)
 			assert.Equal(t, 6, algorithm.populationSize)
 		})
@@ -43,13 +43,13 @@ func TestNewAlgorithm(t *testing.T) {
 		{
 			name:            "populationSize exceeds MAX_POPULATION_SIZE",
 			locations:       make([]*core.Location, 82),
-			expectedPopSize: MAX_POPULATION_SIZE,
+			expectedPopSize: 7000,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			config := NewConfig(7000, 300)
+			config := NewConfig(7000, 300, 4, 0.1)
 			algorithm := NewAlgorithm(config, startingPoint, tt.locations)
 			if algorithm.populationSize != tt.expectedPopSize {
 				t.Errorf("expected populationSize %d, got %d", tt.expectedPopSize, algorithm.populationSize)

@@ -5,30 +5,32 @@ import (
 	"sync"
 )
 
-const (
-	ELITISM_NUMBER = 4
-	MUTATION_RATE  = 0.1
-)
-
 type Population struct {
-	cache        *Cache
-	Chromosomes  []*Chromosome
-	TotalFitness float64
+	cache         *Cache
+	Chromosomes   []*Chromosome
+	TotalFitness  float64
+	ElitismNumber int
+	MutationRate  float64
 }
 
 func (p *Population) GetSize() int { return len(p.Chromosomes) }
 
-func NewPopulation(chromosomes []*Chromosome, getCacheInstanceFn GetCacheInstanceFn) *Population {
-	return &Population{Chromosomes: chromosomes, cache: getCacheInstanceFn()}
+func NewPopulation(chromosomes []*Chromosome, getCacheInstanceFn GetCacheInstanceFn, elitismNumber int, mutationRate float64) *Population {
+	return &Population{
+		Chromosomes:   chromosomes,
+		cache:         getCacheInstanceFn(),
+		ElitismNumber: elitismNumber,
+		MutationRate:  mutationRate,
+	}
 }
 
-func GenerateInitialPopulation(size int, startingPoint *Location, locations []*Location, getCacheInstanceFn GetCacheInstanceFn) *Population {
+func GenerateInitialPopulation(size int, startingPoint *Location, locations []*Location, getCacheInstanceFn GetCacheInstanceFn, elitismNumber int, mutationRate float64) *Population {
 	chromosomes := make([]*Chromosome, size)
 	for i := range size {
 		chromosomes[i] = NewChromosome(startingPoint.ToNewGene(), LocationsToGenes(locations))
 		chromosomes[i].ShufflingGenes()
 	}
-	return NewPopulation(chromosomes, getCacheInstanceFn)
+	return NewPopulation(chromosomes, getCacheInstanceFn, elitismNumber, mutationRate)
 }
 
 func (p *Population) EvaluateFitness() {
@@ -67,7 +69,7 @@ func (p *Population) SortByFitness() {
 func (p *Population) GenerateNextGeration(selection Selection, crossover Crossover, mutation Mutation) *Population {
 	nextGenerationChromosomes := make([]*Chromosome, p.GetSize())
 	p.Elitism(nextGenerationChromosomes)
-	numberOfNewChromosomes := ELITISM_NUMBER
+	numberOfNewChromosomes := p.ElitismNumber
 
 	for {
 		parent1 := selection.Select(p)
@@ -75,7 +77,7 @@ func (p *Population) GenerateNextGeration(selection Selection, crossover Crossov
 		children := crossover.Run(parent1, parent2)
 
 		for i := range children {
-			mutation.Mutate(children[i], MUTATION_RATE)
+			mutation.Mutate(children[i], p.MutationRate)
 		}
 
 		for i := range children {
@@ -90,11 +92,11 @@ func (p *Population) GenerateNextGeration(selection Selection, crossover Crossov
 		}
 	}
 
-	return NewPopulation(nextGenerationChromosomes, GetCacheInstance)
+	return NewPopulation(nextGenerationChromosomes, GetCacheInstance, p.ElitismNumber, p.MutationRate)
 }
 
 func (p *Population) Elitism(nextGenerationChromosomes []*Chromosome) {
-	for i := range ELITISM_NUMBER {
+	for i := range p.ElitismNumber {
 		if i == p.GetSize() {
 			break
 		}

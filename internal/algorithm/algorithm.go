@@ -58,7 +58,14 @@ func (a *Algorithm) Run() {
 	crossover := operation.NewPMX()
 	mutation := operation.NewMutation()
 
-	population := core.GenerateInitialPopulation(a.populationSize, a.startingPoint, a.locations, core.GetCacheInstance)
+	population := core.GenerateInitialPopulation(
+		a.populationSize,
+		a.startingPoint,
+		a.locations,
+		core.GetCacheInstance,
+		a.config.ElitismNumber,
+		a.config.MutationRate,
+	)
 
 	for range a.config.MaxGenerations {
 		population.EvaluateFitness()
