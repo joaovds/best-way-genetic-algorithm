@@ -21,22 +21,22 @@ type (
 
 	LocationRes struct {
 		Address               string  `json:"address"`
+		DistanceHumanReadable string  `json:"distance_human_readable"`
+		TimeHumanReadable     string  `json:"time_human_readable"`
 		IsStarting            bool    `json:"is_starting"`
 		DistanceToNextPoint   float64 `json:"distance_to_next_point"`
-		DistanceHumanReadable string  `json:"distance_human_readable"`
 		TimeSeconds           int     `json:"time_in_seconds"`
-		TimeHumanReadable     string  `json:"time_human_readable"`
 	}
 
 	Response struct {
-		Route                      []LocationRes `json:"route"`
-		TotalDistance              float64       `json:"total_distance"`
 		TotalDistanceHumanReadable string        `json:"total_distance_human_readable"`
-		TotalTime                  int           `json:"total_time"`
 		TotalTimeHumanReadable     string        `json:"total_time_human_readable"`
+		Route                      []LocationRes `json:"route"`
+		TotalTime                  int           `json:"total_time"`
 		PopulationSize             int           `json:"population_size"`
 		MaxGenerations             int           `json:"max_generations"`
 		ElitismNumber              int           `json:"elitism_number"`
+		TotalDistance              float64       `json:"total_distance"`
 		MutationRate               float64       `json:"mutation_rate"`
 	}
 )
