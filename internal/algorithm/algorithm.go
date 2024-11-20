@@ -43,8 +43,12 @@ func NewAlgorithm(config *Config, startingPoint *core.Location, locations []*cor
 		for i := range chromosomeSize {
 			populationSize = populationSize * (i + 1)
 		}
+	} else if chromosomeSize <= 12 {
+		populationSize = chromosomeSize * 10
+	} else if chromosomeSize <= 32 {
+		populationSize = chromosomeSize * 40
 	} else {
-		populationSize = chromosomeSize * 100
+		populationSize = chromosomeSize * 60
 	}
 
 	if populationSize > config.MaxPopulationSize {

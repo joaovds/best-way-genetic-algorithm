@@ -98,6 +98,7 @@ func AlgorithmResponseToApiResponse(algorithmRes *algorithm.AlgorithmResponse) R
 		Route:                      route,
 		TotalDistance:              algorithmRes.BestWay.TotalDistance,
 		TotalDistanceHumanReadable: formatDistance(int(algorithmRes.BestWay.TotalDistance)),
+		TotalTime:                  algorithmRes.BestWay.TotalDuration,
 		TotalTimeHumanReadable:     formatDuration(algorithmRes.BestWay.TotalDuration),
 		PopulationSize:             algorithmRes.PopulationSize,
 		MaxGenerations:             algorithmRes.MaxGenerations,

@@ -26,6 +26,4 @@ func Execute() {
 func init() {
 	algorithm.LoadEnv()
 	rootCmd.Flags().BoolP("help", "h", false, "best_way help commands")
-
-	rootCmd.AddCommand()
 }

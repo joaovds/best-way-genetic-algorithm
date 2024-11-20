@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -31,9 +32,27 @@ var runCmd = &cobra.Command{
 		config := algorithm.NewConfig(populationSize, numGenerations, numElites, mutationRate)
 		distanceCalculator := distance.NewInBatchCalculator()
 		algorithmInstance := algorithm.NewAlgorithm(config, startingPoint, coreLocations, distanceCalculator)
-		algorithmInstance.Run()
+		algorithmRes := algorithmInstance.Run()
 		algorithmInstance.RenderChart()
+		printOutput(algorithmRes)
 	},
+}
+
+func printOutput(response *algorithm.AlgorithmResponse) {
+	resString, _ := json.MarshalIndent(api.AlgorithmResponseToApiResponse(response), "", "  ")
+	fmt.Println(string(resString))
+	fmt.Println("----- ... -----")
+	fmt.Println("ID:", response.BestWay.StartingPoint.GetID(), "=>", response.BestWay.StartingPoint.Address)
+	for _, point := range response.BestWay.Genes {
+		fmt.Println("ID:", point.GetID(), "=>", point.Address)
+	}
+	fmt.Println("----- ... -----")
+	fmt.Println("\033[36mRoute")
+	fmt.Print(response.BestWay.StartingPoint.GetID())
+	for _, point := range response.BestWay.Genes {
+		fmt.Print(" -> ", point.GetID())
+	}
+	fmt.Println("\033[0m")
 }
 
 func init() {
