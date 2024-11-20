@@ -69,15 +69,15 @@ func (a *Algorithm) RenderChart() {
 const pageHTML = `
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>Convergence Graph</title>
-    <script src="https://go-echarts.github.io/go-echarts-assets/assets/echarts.min.js"></script>
-</head>
+	<head>
+		<meta charset="utf-8">
+		<title>Convergence Graph</title>
+		<script src="https://go-echarts.github.io/go-echarts-assets/assets/echarts.min.js"></script>
+	</head>
 
-<body>
-        %s
-        %s
-</body>
+	<body>
+	%s
+	%s
+	</body>
 </html>
 `

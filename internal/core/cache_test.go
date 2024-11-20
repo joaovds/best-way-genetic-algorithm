@@ -15,12 +15,13 @@ func TestCache_StoreAndRetrieve(t *testing.T) {
 	destinationID := 2
 	expectedDistance := 22.765
 
-	cache.CacheDistance(fromID, destinationID, expectedDistance)
+	cache.CacheDistance(fromID, destinationID, expectedDistance, 17)
 
-	actualDistance, found := cache.GetFromCache(fromID, destinationID)
+	actualDistance, duration, found := cache.GetFromCache(fromID, destinationID)
 
 	assert.True(t, found)
 	assert.Equal(t, expectedDistance, actualDistance)
+	assert.Equal(t, 17, duration)
 }
 
 func TestCache_EmptyCache(t *testing.T) {
@@ -28,15 +29,17 @@ func TestCache_EmptyCache(t *testing.T) {
 
 	fromID := 1
 	destinationID := 2
-	actualDistance, found := cache.GetFromCache(fromID, destinationID)
+	actualDistance, duration, found := cache.GetFromCache(fromID, destinationID)
 	assert.False(t, found)
 	assert.Equal(t, 0.0, actualDistance)
+	assert.Equal(t, 0, duration)
 
 	fromID = 999
 	destinationID = 1000
-	actualDistance, found = cache.GetFromCache(fromID, destinationID)
+	actualDistance, duration, found = cache.GetFromCache(fromID, destinationID)
 	assert.False(t, found)
 	assert.Equal(t, 0.0, actualDistance)
+	assert.Equal(t, 0, duration)
 }
 
 func TestCache_Singleton(t *testing.T) {
@@ -54,17 +57,19 @@ func TestCache_OverwriteExistingValue(t *testing.T) {
 	firstDistance := 10.5
 	secondDistance := 20.75
 
-	cache.CacheDistance(fromID, destinationID, firstDistance)
+	cache.CacheDistance(fromID, destinationID, firstDistance, 17)
 
-	actualDistance, found := cache.GetFromCache(fromID, destinationID)
+	actualDistance, duration, found := cache.GetFromCache(fromID, destinationID)
 	assert.True(t, found)
 	assert.Equal(t, firstDistance, actualDistance)
+	assert.Equal(t, 17, duration)
 
-	cache.CacheDistance(fromID, destinationID, secondDistance)
+	cache.CacheDistance(fromID, destinationID, secondDistance, 22)
 
-	actualDistance, found = cache.GetFromCache(fromID, destinationID)
+	actualDistance, duration, found = cache.GetFromCache(fromID, destinationID)
 	assert.True(t, found)
 	assert.Equal(t, secondDistance, actualDistance)
+	assert.Equal(t, 22, duration)
 }
 
 func TestCache_Concurrency(t *testing.T) {
@@ -81,11 +86,12 @@ func TestCache_Concurrency(t *testing.T) {
 			destinationID := i + 1
 			distance := float64(i * 2)
 
-			cache.CacheDistance(fromID, destinationID, distance)
+			cache.CacheDistance(fromID, destinationID, distance, 22)
 
-			actualDistance, found := cache.GetFromCache(fromID, destinationID)
+			actualDistance, duration, found := cache.GetFromCache(fromID, destinationID)
 			assert.True(t, found)
 			assert.Equal(t, distance, actualDistance)
+			assert.Equal(t, 22, duration)
 		}(i)
 	}
 
@@ -113,18 +119,20 @@ func TestCache(t *testing.T) {
 		from := NewGene(1, "address1")
 		destination := NewGene(2, "address2")
 
-		cache.CacheDistance(1, 2, 10.0)
-		distance := from.CalculateDistanceToDestination(destination, cache)
+		cache.CacheDistance(1, 2, 10.0, 22)
+		distance, duration := from.CalculateDistanceToDestination(destination, cache)
 		assert.Equal(t, 10.0, distance)
+		assert.Equal(t, 22, duration)
 
-		storedDistance, found := cache.GetFromCache(from.GetID(), destination.GetID())
+		storedDistance, storedDuration, found := cache.GetFromCache(from.GetID(), destination.GetID())
 		assert.True(t, found)
 		assert.Equal(t, 10.0, storedDistance)
+		assert.Equal(t, 22, storedDuration)
 	})
 
 	t.Run("should handle concurrent access correctly", func(t *testing.T) {
 		cache := MockGetCacheInstanceFn()
-		cache.CacheDistance(1, 2, 10)
+		cache.CacheDistance(1, 2, 10, 22)
 
 		var wg sync.WaitGroup
 		numGoroutines := 10

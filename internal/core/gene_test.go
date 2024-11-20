@@ -19,10 +19,11 @@ func TestCalculateDistanceToDestination(t *testing.T) {
 		for i := range 10 {
 			from := NewGene(i, "any_address")
 			destination := NewGene(i+1, "another_address")
-			mockCache.CacheDistance(i, i+1, float64(i*99+2))
+			mockCache.CacheDistance(i, i+1, float64(i*99+2), 22+i*2)
 
-			result := from.CalculateDistanceToDestination(destination, mockCache)
+			result, duration := from.CalculateDistanceToDestination(destination, mockCache)
 			assert.Equal(t, float64(i*99+2), result)
+			assert.Equal(t, 22+i*2, duration)
 		}
 	})
 }

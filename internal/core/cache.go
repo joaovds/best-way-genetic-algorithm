@@ -18,27 +18,29 @@ type (
 
 	cacheEntry struct {
 		distance float64
+		duration int
 	}
 
 	GetCacheInstanceFn func() *Cache
 )
 
-func (c *Cache) CacheDistance(fromID, destinationID int, distance float64) {
+func (c *Cache) CacheDistance(fromID, destinationID int, distance float64, duration int) {
 	cacheKey := generateCacheKey(fromID, destinationID)
 	c.cacheMap.Store(cacheKey, cacheEntry{
 		distance: distance,
+		duration: duration,
 	})
 }
 
-func (c *Cache) GetFromCache(fromID, destinationID int) (float64, bool) {
+func (c *Cache) GetFromCache(fromID, destinationID int) (distance float64, duration int, ok bool) {
 	cacheKey := generateCacheKey(fromID, destinationID)
 	value, ok := c.cacheMap.Load(cacheKey)
 	if !ok {
-		return 0, false
+		return 0, 0, false
 	}
 
 	entry := value.(cacheEntry)
-	return entry.distance, true
+	return entry.distance, entry.duration, true
 }
 
 func (c *Cache) Clean() {

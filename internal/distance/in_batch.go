@@ -23,7 +23,7 @@ func (i *InBatchCalculator) CalculateDistances(locations []*core.Location, cache
 
 			for j := range locations {
 				if locations[i].ID != locations[j].ID {
-					cache.CacheDistance(locations[i].ID, locations[j].ID, rnd.Float64()*100)
+					cache.CacheDistance(locations[i].ID, locations[j].ID, rnd.Float64()*100, rnd.Intn(10000))
 				}
 			}
 		}(i)

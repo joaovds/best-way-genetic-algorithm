@@ -18,9 +18,10 @@ func TestCalculateDistances(t *testing.T) {
 
 	calculator.CalculateDistances(locations, cache)
 	checkDistanceInCache := func(id1, id2 int) {
-		distance, exists := cache.GetFromCache(id1, id2)
+		distance, duration, exists := cache.GetFromCache(id1, id2)
 		assert.True(t, exists)
 		assert.NotZero(t, distance)
+		assert.NotZero(t, duration)
 	}
 
 	checkDistanceInCache(location1.ID, location2.ID)

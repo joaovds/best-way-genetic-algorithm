@@ -52,12 +52,12 @@ func TestChromosome_CalculateFitness(t *testing.T) {
 		NewGene(3, "any_adress3"),
 	}
 
-	cache.CacheDistance(1, 2, 1.0)
-	cache.CacheDistance(1, 3, 1.0)
-	cache.CacheDistance(2, 1, 1.0)
-	cache.CacheDistance(2, 3, 1.0)
-	cache.CacheDistance(3, 1, 1.0)
-	cache.CacheDistance(3, 2, 1.0)
+	cache.CacheDistance(1, 2, 1.0, 1)
+	cache.CacheDistance(1, 3, 1.0, 1)
+	cache.CacheDistance(2, 1, 1.0, 1)
+	cache.CacheDistance(2, 3, 1.0, 1)
+	cache.CacheDistance(3, 1, 1.0, 1)
+	cache.CacheDistance(3, 2, 1.0, 1)
 
 	chromosome := NewChromosome(startingPointGene, genes)
 	fitness := chromosome.CalculateFitness(cache)

@@ -34,8 +34,9 @@ func (d *DistanceMatrixGoogle) CalculateDistances(locations []*core.Location, ca
 
 	ctx := context.Background()
 	req := &maps.DistanceMatrixRequest{
-		Origins:      locationsAddressStrings,
-		Destinations: locationsAddressStrings,
+		Origins:       locationsAddressStrings,
+		Destinations:  locationsAddressStrings,
+		DepartureTime: "now",
 	}
 	response, err := c.DistanceMatrix(ctx, req)
 	if err != nil {
@@ -51,7 +52,7 @@ func (d *DistanceMatrixGoogle) CalculateDistances(locations []*core.Location, ca
 				originID := locationsAddressOrder[i]
 				destinationID := locationsAddressOrder[j]
 				if originID != destinationID {
-					cache.CacheDistance(originID, destinationID, float64(destination.Distance.Meters))
+					cache.CacheDistance(originID, destinationID, float64(destination.Distance.Meters), int(destination.DurationInTraffic.Seconds()))
 				}
 			}
 		}(i)
