@@ -12,6 +12,7 @@ import (
 func (a *Algorithm) RenderChart() {
 	lineFitness := charts.NewLine()
 	lineDistance := charts.NewLine()
+	lineDistance.Theme, lineFitness.Theme = "dark", "dark"
 
 	lineFitness.SetGlobalOptions(charts.WithTitleOpts(opts.Title{Title: "Convergence - Fitness"}), charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true), Trigger: "axis"}))
 	lineDistance.SetGlobalOptions(charts.WithTitleOpts(opts.Title{Title: "Convergence - Distance"}), charts.WithTooltipOpts(opts.Tooltip{Show: opts.Bool(true), Trigger: "axis"}))

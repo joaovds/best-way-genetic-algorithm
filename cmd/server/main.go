@@ -43,8 +43,13 @@ func main() {
 		algorithmRes := algorithmInstance.Run()
 		go algorithmInstance.RenderChart()
 
+		chartsHTML, err := algorithmInstance.ChartHTML()
+		if err != nil {
+			chartsHTML = "Error when making charts"
+		}
+
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(api.AlgorithmResponseToApiResponse(algorithmRes))
+		json.NewEncoder(w).Encode(api.AlgorithmResponseToApiResponse(algorithmRes, chartsHTML))
 	})
 
 	srv := &http.Server{

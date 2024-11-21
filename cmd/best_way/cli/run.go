@@ -34,12 +34,16 @@ var runCmd = &cobra.Command{
 		algorithmInstance := algorithm.NewAlgorithm(config, startingPoint, coreLocations, distanceCalculator)
 		algorithmRes := algorithmInstance.Run()
 		algorithmInstance.RenderChart()
-		printOutput(algorithmRes)
+		chartsHTML, err := algorithmInstance.ChartHTML()
+		if err != nil {
+			chartsHTML = "Error when making charts"
+		}
+		printOutput(algorithmRes, chartsHTML)
 	},
 }
 
-func printOutput(response *algorithm.AlgorithmResponse) {
-	resString, _ := json.MarshalIndent(api.AlgorithmResponseToApiResponse(response), "", "  ")
+func printOutput(response *algorithm.AlgorithmResponse, chartsHtml string) {
+	resString, _ := json.MarshalIndent(api.AlgorithmResponseToApiResponse(response, chartsHtml), "", "  ")
 	fmt.Println(string(resString))
 	fmt.Println("----- ... -----")
 	fmt.Println("ID:", response.BestWay.StartingPoint.GetID(), "=>", response.BestWay.StartingPoint.Address)

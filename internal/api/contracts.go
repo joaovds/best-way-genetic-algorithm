@@ -29,6 +29,7 @@ type (
 	}
 
 	Response struct {
+		ChartsHtml                 string        `json:"charts_html"`
 		TotalDistanceHumanReadable string        `json:"total_distance_human_readable"`
 		TotalTimeHumanReadable     string        `json:"total_time_human_readable"`
 		Route                      []LocationRes `json:"route"`
@@ -73,7 +74,7 @@ func (l LocationRequest) ToCoreLocation() (startingPoint *core.Location, locatio
 	return
 }
 
-func AlgorithmResponseToApiResponse(algorithmRes *algorithm.AlgorithmResponse) Response {
+func AlgorithmResponseToApiResponse(algorithmRes *algorithm.AlgorithmResponse, chartsHtml string) Response {
 	route := make([]LocationRes, 0, len(algorithmRes.BestWay.Genes)+1)
 	route = append(route, LocationRes{
 		Address:               algorithmRes.BestWay.StartingPoint.Address,
@@ -96,6 +97,7 @@ func AlgorithmResponseToApiResponse(algorithmRes *algorithm.AlgorithmResponse) R
 
 	return Response{
 		Route:                      route,
+		ChartsHtml:                 chartsHtml,
 		TotalDistance:              algorithmRes.BestWay.TotalDistance,
 		TotalDistanceHumanReadable: formatDistance(int(algorithmRes.BestWay.TotalDistance)),
 		TotalTime:                  algorithmRes.BestWay.TotalDuration,
