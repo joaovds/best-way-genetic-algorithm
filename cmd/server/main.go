@@ -10,6 +10,7 @@ import (
 	"github.com/joaovds/best-way-genetic-algorithm/internal/algorithm"
 	"github.com/joaovds/best-way-genetic-algorithm/internal/api"
 	"github.com/joaovds/best-way-genetic-algorithm/internal/distance"
+	"github.com/rs/cors"
 )
 
 func init() {
@@ -19,7 +20,8 @@ func init() {
 func main() {
 	mainMux := http.NewServeMux()
 
-	mainMux.HandleFunc("POST /", func(w http.ResponseWriter, r *http.Request) {
+	mainMux.HandleFunc("/get-route", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
 		var requestData api.LocationRequest
 
 		if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
@@ -52,9 +54,11 @@ func main() {
 		json.NewEncoder(w).Encode(api.AlgorithmResponseToApiResponse(algorithmRes, chartsHTML))
 	})
 
+	handler := cors.Default().Handler(mainMux)
+
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", algorithm.ENV.ServerPort),
-		Handler:      mainMux,
+		Handler:      handler,
 		ReadTimeout:  20 * time.Second,
 		WriteTimeout: 1 * time.Minute,
 		IdleTimeout:  100 * time.Second,
