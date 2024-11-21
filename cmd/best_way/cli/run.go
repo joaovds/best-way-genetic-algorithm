@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/joaovds/best-way-genetic-algorithm/internal/algorithm"
 	"github.com/joaovds/best-way-genetic-algorithm/internal/api"
@@ -32,18 +33,21 @@ var runCmd = &cobra.Command{
 		config := algorithm.NewConfig(populationSize, numGenerations, numElites, mutationRate)
 		distanceCalculator := distance.NewInBatchCalculator()
 		algorithmInstance := algorithm.NewAlgorithm(config, startingPoint, coreLocations, distanceCalculator)
+
+		start := time.Now()
 		algorithmRes := algorithmInstance.Run()
+
 		algorithmInstance.RenderChart()
 		chartsHTML, err := algorithmInstance.ChartHTML()
 		if err != nil {
 			chartsHTML = "Error when making charts"
 		}
-		printOutput(algorithmRes, chartsHTML)
+		printOutput(algorithmRes, chartsHTML, start)
 	},
 }
 
-func printOutput(response *algorithm.AlgorithmResponse, chartsHtml string) {
-	resString, _ := json.MarshalIndent(api.AlgorithmResponseToApiResponse(response, chartsHtml), "", "  ")
+func printOutput(response *algorithm.AlgorithmResponse, chartsHtml string, start time.Time) {
+	resString, _ := json.MarshalIndent(api.AlgorithmResponseToApiResponse(response, chartsHtml, start), "", "  ")
 	fmt.Println(string(resString))
 	fmt.Println("----- ... -----")
 	fmt.Println("ID:", response.BestWay.StartingPoint.GetID(), "=>", response.BestWay.StartingPoint.Address)

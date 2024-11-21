@@ -42,7 +42,10 @@ func main() {
 		config := algorithm.NewConfig(requestData.MaxPopulation, requestData.MaxGenerations, requestData.Elitism, requestData.MutationRate)
 		distanceCalculator := distance.NewDistanceMatrixGoogle(algorithm.ENV.MAPS_API_KEY)
 		algorithmInstance := algorithm.NewAlgorithm(config, startingPoint, coreLocations, distanceCalculator)
+
+		start := time.Now()
 		algorithmRes := algorithmInstance.Run()
+
 		go algorithmInstance.RenderChart()
 
 		chartsHTML, err := algorithmInstance.ChartHTML()
@@ -51,7 +54,7 @@ func main() {
 		}
 
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(api.AlgorithmResponseToApiResponse(algorithmRes, chartsHTML))
+		json.NewEncoder(w).Encode(api.AlgorithmResponseToApiResponse(algorithmRes, chartsHTML, start))
 	})
 
 	handler := cors.Default().Handler(mainMux)

@@ -36,6 +36,7 @@ type (
 		ChartsHtml                 string        `json:"charts_html"`
 		TotalDistanceHumanReadable string        `json:"total_distance_human_readable"`
 		TotalTimeHumanReadable     string        `json:"total_time_human_readable"`
+		AlgoritmTime               string        `json:"algorithm_time"`
 		Route                      []LocationRes `json:"route"`
 		TotalTime                  int           `json:"total_time"`
 		PopulationSize             int           `json:"population_size"`
@@ -90,7 +91,7 @@ func (l LocationRequest) ToCoreLocation() (startingPoint *core.Location, locatio
 	return
 }
 
-func AlgorithmResponseToApiResponse(algorithmRes *algorithm.AlgorithmResponse, chartsHtml string) Response {
+func AlgorithmResponseToApiResponse(algorithmRes *algorithm.AlgorithmResponse, chartsHtml string, startTime time.Time) Response {
 	route := make([]LocationRes, 0, len(algorithmRes.BestWay.Genes)+1)
 	route = append(route, LocationRes{
 		Address:               algorithmRes.BestWay.StartingPoint.Address,
@@ -113,6 +114,7 @@ func AlgorithmResponseToApiResponse(algorithmRes *algorithm.AlgorithmResponse, c
 
 	return Response{
 		Route:                      route,
+		AlgoritmTime:               fmt.Sprintf("%ds %03dms", int(time.Since(startTime).Seconds()), int(time.Since(startTime).Milliseconds())%1000),
 		ChartsHtml:                 chartsHtml,
 		TotalDistance:              algorithmRes.BestWay.TotalDistance,
 		TotalDistanceHumanReadable: formatDistance(int(algorithmRes.BestWay.TotalDistance)),
@@ -127,10 +129,12 @@ func AlgorithmResponseToApiResponse(algorithmRes *algorithm.AlgorithmResponse, c
 
 func formatDuration(seconds int) string {
 	duration := time.Duration(seconds) * time.Second
-	minutes := int(duration.Minutes())
+
+	hours := int(duration.Hours())
+	minutes := int(duration.Minutes()) % 60
 	remainingSeconds := int(duration.Seconds()) % 60
 
-	return fmt.Sprintf("%dm%ds", minutes, remainingSeconds)
+	return fmt.Sprintf("%d:%d:%d", hours, minutes, remainingSeconds)
 }
 
 func formatDistance(meters int) string {

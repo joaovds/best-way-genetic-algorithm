@@ -130,14 +130,16 @@ func renderTemplate(fitnessOptions, distanceOptions any) (string, error) {
 			<div class="item" id="distanceChart" style="width:900px;height:500px;"></div>
 		<script type="text/javascript">
 		"use strict";
-		let fitnessChart = echarts.init(document.getElementById('fitnessChart'), "dark", { renderer: "canvas" });
-		let distanceChart = echarts.init(document.getElementById('distanceChart'), "dark", { renderer: "canvas" });
+			(function() {
+				let fitnessChart = echarts.init(document.getElementById('fitnessChart'), "dark", { renderer: "canvas" });
+				let distanceChart = echarts.init(document.getElementById('distanceChart'), "dark", { renderer: "canvas" });
 
-		let fitnessOption = {{.FitnessOption}};
-		let distanceOption = {{.DistanceOption}};
+				let fitnessOption = {{.FitnessOption}};
+				let distanceOption = {{.DistanceOption}};
 
-		fitnessChart.setOption(fitnessOption);
-		distanceChart.setOption(distanceOption);
+				fitnessChart.setOption(fitnessOption);
+				distanceChart.setOption(distanceOption);
+			})();
 		</script>
 		<style>
 		.container {margin-top:30px; display: flex;justify-content: center;align-items: center;}
