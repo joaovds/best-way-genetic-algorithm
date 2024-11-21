@@ -16,7 +16,11 @@ type (
 	}
 
 	LocationRequest struct {
-		Locations []Location `json:"locations"`
+		Locations      []Location `json:"locations"`
+		MaxPopulation  int        `json:"max_population"`
+		MaxGenerations int        `json:"max_generations"`
+		Elitism        int        `json:"elitism"`
+		MutationRate   float64    `json:"mutation_rate"`
 	}
 
 	LocationRes struct {
@@ -45,6 +49,18 @@ type (
 func (l *LocationRequest) Validate() error {
 	if len(l.Locations) <= 2 {
 		return errors.New("The locations must be more than 2")
+	}
+	if l.MaxGenerations == 0 {
+		l.MaxGenerations = 500
+	}
+	if l.MaxPopulation == 0 {
+		l.MaxPopulation = 7000
+	}
+	if l.MutationRate == 0 {
+		l.MutationRate = 0.2
+	}
+	if l.Elitism == 0 {
+		l.Elitism = 4
 	}
 	return nil
 }

@@ -37,7 +37,7 @@ func main() {
 			http.Error(w, fmt.Sprintf("Error converting to core locations: %v", err), http.StatusBadRequest)
 			return
 		}
-		config := algorithm.NewConfig(7000, 500, 4, 0.3)
+		config := algorithm.NewConfig(requestData.MaxPopulation, requestData.MaxGenerations, requestData.Elitism, requestData.MutationRate)
 		distanceCalculator := distance.NewDistanceMatrixGoogle(algorithm.ENV.MAPS_API_KEY)
 		algorithmInstance := algorithm.NewAlgorithm(config, startingPoint, coreLocations, distanceCalculator)
 		algorithmRes := algorithmInstance.Run()
