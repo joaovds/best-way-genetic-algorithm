@@ -16,8 +16,8 @@ var ENV *Env
 
 func newEnv() *Env {
 	port := "3333"
-	if os.Getenv("SERVER_PORT") != "" {
-		port = os.Getenv("SERVER_PORT")
+	if os.Getenv("PORT") != "" {
+		port = os.Getenv("PORT")
 	}
 
 	return &Env{
