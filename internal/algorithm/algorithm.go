@@ -14,6 +14,7 @@ type (
 		stats              []generationStats
 		populationSize     int
 		chromosomeSize     int
+		response           *AlgorithmResponse
 	}
 
 	AlgorithmResponse struct {
@@ -103,11 +104,14 @@ func (a *Algorithm) Run() *AlgorithmResponse {
 		population = population.GenerateNextGeration(selection, crossover, mutation)
 	}
 
-	return &AlgorithmResponse{
+	response := &AlgorithmResponse{
 		BestWay:        population.Chromosomes[0],
 		PopulationSize: population.GetSize(),
 		MaxGenerations: a.config.MaxGenerations,
 		ElitismNumber:  a.config.ElitismNumber,
 		MutationRate:   a.config.MutationRate,
 	}
+
+	a.response = response
+	return response
 }

@@ -32,25 +32,6 @@ func (a *Algorithm) ChartHTML() (string, error) {
 		xAxisData[i] = i + 1
 	}
 
-	axisData := make([]int, a.chromosomeSize+1)
-	for i := range a.chromosomeSize + 1 {
-		axisData[i] = i
-	}
-	graphData := make([]int, a.chromosomeSize+1)
-	graphData[0] = 100
-	for i := range a.chromosomeSize {
-		graphData[i+1] = int(a.locations[i].ToNewGene().Distance)
-	}
-	links := make([]map[string]any, a.chromosomeSize+1)
-	links[0] = map[string]any{"source": a.startingPoint.ID, "target": a.locations[0].ID}
-	for i := range a.chromosomeSize {
-		if i == a.chromosomeSize {
-			links[i+1] = map[string]any{"source": a.locations[i].ID, "target": a.startingPoint.ID}
-		} else {
-			links[i+1] = map[string]any{"source": a.locations[i].ID, "target": a.locations[i].ID}
-		}
-	}
-
 	fitnessOptions := map[string]any{
 		"legend": map[string]any{},
 		"title":  map[string]any{"text": "Convergence - Fitness"},
@@ -137,6 +118,25 @@ func (a *Algorithm) ChartHTML() (string, error) {
 				"data":       distanceWorseDataSerie,
 			},
 		},
+	}
+
+	axisData := make([]int, a.chromosomeSize+1)
+	axisData[0] = a.response.BestWay.StartingPoint.GetID()
+	for i := range a.response.BestWay.Genes {
+		axisData[i+1] = a.response.BestWay.Genes[i].GetID()
+	}
+	graphData := make([]float64, a.chromosomeSize+1)
+	graphData[0] = a.response.BestWay.StartingPoint.Distance
+	for i := range a.chromosomeSize {
+		graphData[i+1] = a.response.BestWay.Genes[i].Distance
+	}
+	links := make([]map[string]any, a.chromosomeSize+1)
+	for i := range a.chromosomeSize + 1 {
+		if i == a.chromosomeSize {
+			links[i] = map[string]any{"source": i, "target": 0}
+		} else {
+			links[i] = map[string]any{"source": i, "target": i + 1}
+		}
 	}
 
 	distanceGraphOptions := map[string]any{
