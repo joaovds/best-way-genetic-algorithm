@@ -45,6 +45,16 @@ type (
 		TotalDistance              float64       `json:"total_distance"`
 		MutationRate               float64       `json:"mutation_rate"`
 	}
+
+	ChartHTMLGenerateRequest struct {
+		Title string    `json:"title"`
+		X     []int     `json:"x"`
+		Y     []float64 `json:"y"`
+	}
+
+	ChartHTMLGenerateResponse struct {
+		Data string `json:"data"`
+	}
 )
 
 func (l *LocationRequest) Validate() error {

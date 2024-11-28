@@ -10,6 +10,7 @@ import (
 	"github.com/joaovds/best-way-genetic-algorithm/internal/algorithm"
 	"github.com/joaovds/best-way-genetic-algorithm/internal/api"
 	"github.com/joaovds/best-way-genetic-algorithm/internal/distance"
+	"github.com/joaovds/best-way-genetic-algorithm/pkg/charts"
 	"github.com/rs/cors"
 )
 
@@ -92,6 +93,30 @@ func main() {
 
 		w.WriteHeader(200)
 		json.NewEncoder(w).Encode(api.AlgorithmResponseToApiResponse(algorithmRes, chartsHTML, start))
+	})
+
+	mainMux.HandleFunc("/chart-html-generate", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		var requestData api.ChartHTMLGenerateRequest
+
+		if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
+			http.Error(w, "failed to decode request body", http.StatusBadRequest)
+			return
+		}
+
+		chartsHTML, err := charts.ChartHTML(requestData.Title, requestData.X, requestData.Y)
+		if err != nil {
+			chartsHTML = "Error when making charts"
+		}
+
+		responseData, err := json.Marshal(api.ChartHTMLGenerateResponse{Data: chartsHTML})
+		if err != nil {
+			http.Error(w, "failed to encode response body", http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(200)
+		w.Write(responseData)
 	})
 
 	handler := cors.Default().Handler(mainMux)
