@@ -10,11 +10,11 @@ type (
 		distanceCalculator core.DistanceCalculator
 		config             *Config
 		startingPoint      *core.Location
+		response           *AlgorithmResponse
 		locations          []*core.Location
 		stats              []generationStats
 		populationSize     int
 		chromosomeSize     int
-		response           *AlgorithmResponse
 	}
 
 	AlgorithmResponse struct {
